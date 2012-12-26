@@ -15,15 +15,15 @@ examples:
 {u'_id': ObjectId('50dad1e11ffd9e11c8fea454'), u'id': u'123', u'v': 123}
 {u'_id': ObjectId('50dad2311ffd9e11c8fea455'), u'id': u'234', u'v': 234}
 >>> s.filter(sort=[('v',s.desc)])
->>> s.get_all()
+>>> s.get()
 [{u'_id': ObjectId('50dad2311ffd9e11c8fea455'), u'id': u'234', u'v': 234}, {u'_i
 d': ObjectId('50dad1e11ffd9e11c8fea454'), u'id': u'123', u'v': 123}]
 >>> s.filter(sort=[('v',s.asc)])
->>> s.get_all()
+>>> s.get()
 [{u'_id': ObjectId('50dad1e11ffd9e11c8fea454'), u'id': u'123', u'v': 123}, {u'_i
 d': ObjectId('50dad2311ffd9e11c8fea455'), u'id': u'234', u'v': 234}]
 >>> s.filter(limit=1)
->>> s.get_all()
+>>> s.get()
 [{u'_id': ObjectId('50dad1e11ffd9e11c8fea454'), u'id': u'123', u'v': 123}]
 >>> len(s)
 2
@@ -41,7 +41,7 @@ d': ObjectId('50dad2311ffd9e11c8fea455'), u'id': u'234', u'v': 234}]
 >>> s.clear_arg()
 >>> s.arg
 {}
->>> s.sort(v=s.asc).limit(2).get_all()
+>>> s.sort(v=s.asc).limit(2).get()
 [{u'_id': ObjectId('50dad85e1ffd9e1adc57d469'), u'id': u'1', u'v': 1}, {u'_id':
 ObjectId('50dad8641ffd9e1adc57d46a'), u'id': u'2', u'v': 2}]
 >>> s.arg
