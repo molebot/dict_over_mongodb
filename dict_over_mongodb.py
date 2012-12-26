@@ -8,6 +8,8 @@ from pymongo import ASCENDING as asc
 from pymongo import DESCENDING as desc
 
 class dictomongo( dict ):
+    def __repr__( self ):
+        return list(self.collect.find())
     def filter( self, **args ):
         self.arg = args
     def get_all( self ):
@@ -70,12 +72,3 @@ class dictomongo( dict ):
         self.collect = self.db[self.collection]
     def error(self):
         return self.collect.get_lasterror_options()
-
-def do():
-    import time
-    print 'test'
-    s = dictomongo('test')
-    s['12']=123
-    s['%.3f'%time.time()] = time.time()
-    print s['12']
-    print len(s)
