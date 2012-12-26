@@ -49,7 +49,7 @@ class dictomongo( dict ):
                     pswd = None,
                     database_name = 'dict_over_mongo', 
                     capped = None ):    #  example : {capped:True,size:10**10,max:500}
-        self.id = '@_id_#'
+        self.id = 'id'
         self.arg = None
         self.asc = asc
         self.desc = desc
