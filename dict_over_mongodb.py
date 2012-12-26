@@ -74,6 +74,27 @@ class dictomongo( dict ):
             return list(self.collect.find(**self.arg ))
         else:
             return list(self.collect.find())
+    def has_key( self, key ):
+        return self.collect.find_one( {self.id:key} ) != None
+    def pop( self, key ):
+        out = list(self.collect.find( {self.id:key} ))
+        self.__delitem__( key )
+        return out
+    def keys( self ):
+        if self.arg:
+            return map(lambda x:x[self.id],list(self.collect.find( **self.arg )))
+        else:
+            return map(lambda x:x[self.id],list(self.collect.find()))
+    def values( self ):
+        if self.arg:
+            return map(lambda x:x[self.value],list(self.collect.find( **self.arg )))
+        else:
+            return map(lambda x:x[self.value],list(self.collect.find()))
+    def items( self ):
+        if self.arg:
+            return map(lambda x:(x[self.id],x[self.value]),list(self.collect.find( **self.arg )))
+        else:
+            return map(lambda x:(x[self.id],x[self.value]),list(self.collect.find()))
     def __getitem__( self, key ):
         if self.arg:
             return list(self.collect.find( {self.id:key}, **self.arg ))
@@ -89,13 +110,13 @@ class dictomongo( dict ):
         if type(value) == type({}):
             one.update( value )
         else:
-            one['v'] = value
+            one[self.value] = value
         self.collect.save( one )
     def __repr__( self ):
         return '\n'.join(map(str,list(self.collect.find())))
     def __delitem__( self, key ):
         if self.capped is None:
-            self.collect.remove( key )
+            self.collect.remove( {self.id:key} )
     def __len__( self ):
         return self.collect.count()
     def clear( self ):
@@ -109,6 +130,7 @@ class dictomongo( dict ):
                     database_name = 'dict_over_mongo', 
                     capped = None ):    #  example : {capped:True,size:10**10,max:500}
         self.id = 'id'
+        self.value = 'v'
         self.arg = {}
         self.asc = asc
         self.desc = desc
