@@ -1,6 +1,36 @@
 '''
 need: pymongo  ( https://github.com/mongodb/mongo-python-driver )
 author: molebot@outlook.com
+
+examples:
+>>> from dict_over_mongodb import dictomongo as dm
+>>> s=dm('test')
+>>> s['123']=123
+>>> s
+{u'_id': ObjectId('50dad1e11ffd9e11c8fea454'), u'id': u'123', u'v': 123}
+>>> len(s)
+1
+>>> s['234']=234
+>>> s
+{u'_id': ObjectId('50dad1e11ffd9e11c8fea454'), u'id': u'123', u'v': 123}
+{u'_id': ObjectId('50dad2311ffd9e11c8fea455'), u'id': u'234', u'v': 234}
+>>> s.filter(sort=[('v',s.desc)])
+>>> s.get_all()
+[{u'_id': ObjectId('50dad2311ffd9e11c8fea455'), u'id': u'234', u'v': 234}, {u'_i
+d': ObjectId('50dad1e11ffd9e11c8fea454'), u'id': u'123', u'v': 123}]
+>>> s.filter(sort=[('v',s.asc)])
+>>> s.get_all()
+[{u'_id': ObjectId('50dad1e11ffd9e11c8fea454'), u'id': u'123', u'v': 123}, {u'_i
+d': ObjectId('50dad2311ffd9e11c8fea455'), u'id': u'234', u'v': 234}]
+>>> s.filter(limit=1)
+>>> s.get_all()
+[{u'_id': ObjectId('50dad1e11ffd9e11c8fea454'), u'id': u'123', u'v': 123}]
+>>> len(s)
+2
+>>> s.clear()
+>>> len(s)
+0
+>>>
 '''
 
 from pymongo import MongoClient as _mc
