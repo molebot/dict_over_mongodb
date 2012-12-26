@@ -31,46 +31,8 @@ d': ObjectId('50dad2311ffd9e11c8fea455'), u'id': u'234', u'v': 234}]
 >>> len(s)
 0
 >>>
-Welcome to Git (version 1.8.0-preview20121022)
-
-
-Run 'git help git' to display the help index.
-Run 'git help <command>' to display help for specific commands.
-
-molebot@BLACK /C/Python27
-$ python
-ActivePython 2.7.2.5 (ActiveState Software Inc.) based on
-Python 2.7.2 (default, Jun 24 2011, 12:22:14) [MSC v.1500 64 bit (AMD64)] on win
-32
-Type "help", "copyright", "credits" or "license" for more information.
->>> def a(**a):print a.items()
-...
->>> a(a=1,b=2,c=3)
-[('a', 1), ('c', 3), ('b', 2)]
->>>
-
-
-molebot@BLACK /C/Python27
-$
-
-molebot@BLACK /C/Python27
-$
-
-molebot@BLACK /C/Python27
-$ python
-ActivePython 2.7.2.5 (ActiveState Software Inc.) based on
-Python 2.7.2 (default, Jun 24 2011, 12:22:14) [MSC v.1500 64 bit (AMD64)] on win
-32
-Type "help", "copyright", "credits" or "license" for more information.
->>> from dict_over_mongodb import dictomongo as do
->>> s=do('aa')
->>> s
-
 >>> s['1']=1
 >>> s['2']=2
->>> s
-{u'_id': ObjectId('50dad85e1ffd9e1adc57d469'), u'id': u'1', u'v': 1}
-{u'_id': ObjectId('50dad8641ffd9e1adc57d46a'), u'id': u'2', u'v': 2}
 >>> s['3']=3
 >>> s
 {u'_id': ObjectId('50dad85e1ffd9e1adc57d469'), u'id': u'1', u'v': 1}
@@ -84,6 +46,9 @@ Type "help", "copyright", "credits" or "license" for more information.
 ObjectId('50dad8641ffd9e1adc57d46a'), u'id': u'2', u'v': 2}]
 >>> s.arg
 {'sort': [('v', 1)], 'limit': 2}
+>>> s.clear_arg()
+>>> s.arg
+{}
 '''
 
 from pymongo import MongoClient as _mc
