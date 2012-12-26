@@ -9,7 +9,7 @@ from pymongo import DESCENDING as desc
 
 class dictomongo( dict ):
     def __repr__( self ):
-        return list(self.collect.find())
+        return '\n'.join(map(str,list(self.collect.find())))
     def filter( self, **args ):
         self.arg = args
     def get_all( self ):
