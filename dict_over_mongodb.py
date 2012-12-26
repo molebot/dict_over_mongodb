@@ -10,6 +10,11 @@ from pymongo import DESCENDING as desc
 class dictomongo( dict ):
     def filter( self, **args ):
         self.arg = args
+    def get_all( self ):
+        if self.arg:
+            return list(self.collect.find(**self.arg ))
+        else:
+            return list(self.collect.find())
     def __getitem__( self, key ):
         if self.arg:
             return list(self.collect.find( {self.id:key}, **self.arg ))
@@ -29,10 +34,7 @@ class dictomongo( dict ):
         self.collect.save( one )
     def __delitem__( self, key ):
         if self.capped is None:
-            if key:
-                self.collect.remove( key )
-            else:
-                self.clear()
+            self.collect.remove( key )
     def __len__( self ):
         return self.collect.count()
     def clear( self ):
