@@ -11,10 +11,21 @@ class dictomongo( dict ):
     def filter( self, **args ):
         self.arg = args
     def __getitem__( self, key ):
-        return list(self.collect.find( {self.id:key}, **self.arg ))
+        if self.arg:
+            return list(self.collect.find( {self.id:key}, **self.arg ))
+        else:
+            return list(self.collect.find( {self.id:key} ))
     def __setitem__( self, key, value ):
-        one = self.collect.find_one( {self.id:key}, **self.arg ) 
-        one.update( value )
+        if self.arg:
+            one = self.collect.find_one( {self.id:key}, **self.arg )
+        else:
+            one = self.collect.find_one( {self.id:key} )
+        if one is None:
+            one = {self.id:key}
+        if type(value) == type({}):
+            one.update( value )
+        else:
+            one['v'] = value
         self.collect.save( one )
     def __delitem__( self, key ):
         if self.capped is None:
@@ -35,6 +46,7 @@ class dictomongo( dict ):
                     database_name = 'dict_over_mongo', 
                     capped = None ):    #  example : {capped:True,size:10**10,max:500}
         self.id = '@_id_#'
+        self.arg = None
         self.asc = asc
         self.desc = desc
         self.host = host
@@ -49,5 +61,19 @@ class dictomongo( dict ):
         if self.user and self.pswd:
             self.auth = self.db.authenticate(self.user,self.pswd)
         if self.collection not in self.db.collection_names():
-            self.db.create_collection(self.collection,**capped)
+            if capped:
+                self.db.create_collection(self.collection,**capped)
+            else:
+                self.db.create_collection(self.collection)
         self.collect = self.db[self.collection]
+    def error(self):
+        return self.collect.get_lasterror_options()
+
+def do():
+    import time
+    print 'test'
+    s = dictomongo('test')
+    s['12']=123
+    s['%.3f'%time.time()] = time.time()
+    print s['12']
+    print len(s)
