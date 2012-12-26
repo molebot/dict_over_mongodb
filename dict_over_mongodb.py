@@ -8,7 +8,6 @@ from pymongo import ASCENDING as asc
 from pymongo import DESCENDING as desc
 
 class dictomongo( dict ):
-    id = '@_id_#'
     def filter( self, **args ):
         self.arg = args
     def __getitem__( self, key ):
@@ -35,6 +34,7 @@ class dictomongo( dict ):
                     pswd = None,
                     database_name = 'dict_over_mongo', 
                     capped = None ):    #  example : {capped:True,size:10**10,max:500}
+        self.id = '@_id_#'
         self.asc = asc
         self.desc = desc
         self.host = host
