@@ -69,7 +69,7 @@ class dictomongo( dict ):
         return self
     def clear_arg( self ):
         self.arg = {}
-    def get_all( self ):
+    def get( self ):
         if self.arg:
             return list(self.collect.find(**self.arg ))
         else:
