@@ -91,9 +91,13 @@ class dictomongo( dict ):
             spec = dict([key])
         else:
             spec = {self.id:key}
-        out = list(self.collect.find( spec ))
-        self.__delitem__( spec )
-        return out
+        out = self.collect.find( spec )
+        if out:
+            out = list(out)
+            self.__delitem__( spec )
+            return out
+        else:
+            return []
     def keys( self ):
         out = self.get()
         if out:
