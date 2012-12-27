@@ -71,9 +71,13 @@ class dictomongo( dict ):
         self.arg = {}
     def get( self ):
         if self.arg:
-            return list(self.collect.find(**self.arg ))
+            out = self.collect.find(**self.arg )
         else:
-            return list(self.collect.find())
+            out = self.collect.find()
+        if out:
+            return list(out)
+        else:
+            return []
     def has_key( self, key ):
         return self.collect.find_one( {self.id:key} ) != None
     def pop( self, key ):
@@ -81,25 +85,32 @@ class dictomongo( dict ):
         self.__delitem__( key )
         return out
     def keys( self ):
-        if self.arg:
-            return map(lambda x:x[self.id],list(self.collect.find( **self.arg )))
+        out = self.get()
+        if out:
+            return map(lambda x:x[self.id],out)
         else:
-            return map(lambda x:x[self.id],list(self.collect.find()))
+            return []
     def values( self ):
-        if self.arg:
-            return map(lambda x:x[self.value],list(self.collect.find( **self.arg )))
+        out = self.get()
+        if out:
+            return map(lambda x:x[self.value],out)
         else:
-            return map(lambda x:x[self.value],list(self.collect.find()))
+            return []
     def items( self ):
-        if self.arg:
-            return map(lambda x:(x[self.id],x[self.value]),list(self.collect.find( **self.arg )))
+        out = self.get()
+        if out:
+            return map(lambda x:(x[self.id],x[self.value]),out)
         else:
-            return map(lambda x:(x[self.id],x[self.value]),list(self.collect.find()))
+            return []
     def __getitem__( self, key ):
         if self.arg:
-            return list(self.collect.find( {self.id:key}, **self.arg ))
+            out = self.collect.find( {self.id:key}, **self.arg )
         else:
-            return list(self.collect.find( {self.id:key} ))
+            out = self.collect.find( {self.id:key} )
+        if out:
+            return list(out)
+        else:
+            return []
     def __setitem__( self, key, value ):
         if self.arg:
             one = self.collect.find_one( {self.id:key}, **self.arg )
