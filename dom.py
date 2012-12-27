@@ -79,10 +79,18 @@ class dictomongo( dict ):
         else:
             return []
     def has_key( self, key ):
-        return self.collect.find_one( {self.id:key} ) != None
+        if type(key)==type(()):
+            spec = dict([key])
+        else:
+            spec = {self.id:key}
+        return self.collect.find_one( spec ) != None
     def pop( self, key ):
-        out = list(self.collect.find( {self.id:key} ))
-        self.__delitem__( key )
+        if type(key)==type(()):
+            spec = dict([key])
+        else:
+            spec = {self.id:key}
+        out = list(self.collect.find( spec ))
+        self.__delitem__( spec )
         return out
     def keys( self ):
         out = self.get()
@@ -103,19 +111,27 @@ class dictomongo( dict ):
         else:
             return []
     def __getitem__( self, key ):
-        if self.arg:
-            out = self.collect.find( {self.id:key}, **self.arg )
+        if type(key)==type(()):
+            spec = dict([key])
         else:
-            out = self.collect.find( {self.id:key} )
+            spec = {self.id:key}
+        if self.arg:
+            out = self.collect.find( spec, **self.arg )
+        else:
+            out = self.collect.find( spec )
         if out:
             return list(out)
         else:
             return []
     def __setitem__( self, key, value ):
-        if self.arg:
-            one = self.collect.find_one( {self.id:key}, **self.arg )
+        if type(key)==type(()):
+            spec = dict([key])
         else:
-            one = self.collect.find_one( {self.id:key} )
+            spec = {self.id:key}
+        if self.arg:
+            one = self.collect.find_one( spec, **self.arg )
+        else:
+            one = self.collect.find_one( spec )
         if one is None:
             one = {self.id:key}
         if type(value) == type({}):
@@ -126,8 +142,12 @@ class dictomongo( dict ):
     def __repr__( self ):
         return '\n'.join(map(str,list(self.collect.find())))
     def __delitem__( self, key ):
+        if type(key)==type(()):
+            spec = dict([key])
+        else:
+            spec = {self.id:key}
         if self.capped is None:
-            self.collect.remove( {self.id:key} )
+            self.collect.remove( spec )
     def __len__( self ):
         return self.collect.count()
     def clear( self ):
@@ -139,7 +159,7 @@ class dictomongo( dict ):
                     user = None,
                     pswd = None,
                     database_name = 'dict_over_mongo', 
-                    capped = None ):    #  example : {capped:True,size:10**10,max:500}
+                    capped = None ):    #  example : {'capped':True,'size':10**10,'max':500}
         self.id = 'id'
         self.value = 'v'
         self.arg = {}
