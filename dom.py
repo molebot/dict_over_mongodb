@@ -3,7 +3,7 @@ need: pymongo  ( https://github.com/mongodb/mongo-python-driver )
 author: molebot@outlook.com
 
 examples:
->>> from dict_over_mongodb import dictomongo as dm
+>>> from dom import dictomongo as dm
 >>> s=dm('test')
 >>> s['123']=123
 >>> s
