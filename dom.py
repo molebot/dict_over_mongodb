@@ -56,7 +56,7 @@ from pymongo import ASCENDING as asc
 from pymongo import DESCENDING as desc
 
 class dictomongo( dict ):
-    def ensure_index(index_list,ttl=3600*24):
+    def ensure_index(self,index_list,ttl=3600*24):  #   [(key1,desc),(key2,asc)...]
         return self.collect.ensure_index(index_list,ttl=ttl)
     def filter( self, **args ):
         self.arg = args
