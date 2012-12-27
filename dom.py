@@ -154,14 +154,16 @@ class dictomongo( dict ):
         if self.capped is None:
             self.collect.drop()
     def __init__( self, collection, 
+                    id = 'id',
+                    value = 'v',
                     host = 'localhost', 
                     port = 27017,
                     user = None,
                     pswd = None,
                     database_name = 'dict_over_mongo', 
                     capped = None ):    #  example : {'capped':True,'size':10**10,'max':500}
-        self.id = 'id'
-        self.value = 'v'
+        self.id = id
+        self.value = value
         self.arg = {}
         self.asc = asc
         self.desc = desc
