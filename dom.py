@@ -58,6 +58,10 @@ from pymongo import DESCENDING as desc
 class dictomongo( dict ):
     def ensure_index(self,index_list,ttl=3600*24):  #   [(key1,desc),(key2,asc)...]
         return self.collect.ensure_index(index_list,ttl=ttl)
+    def id(self):   #   for dict.keys()
+        return self.id
+    def value(self):    #   for dict.values()
+        return self.value
     def filter( self, **args ):
         self.arg = args
     def sort( self, **args ):
