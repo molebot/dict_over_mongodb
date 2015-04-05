@@ -50,18 +50,17 @@ ObjectId('50dad8641ffd9e1adc57d46a'), u'id': u'2', u'v': 2}]
 >>> s.arg
 {}
 '''
-
-from pymongo import MongoClient as _mc
+from settings import mongo_server
+import time
+from pymongo import Connection as _mc
 from pymongo import ASCENDING as asc
 from pymongo import DESCENDING as desc
+
+_DB_Name = 'dictovermongo'
 
 class dictomongo( dict ):
     def ensure_index(self,index_list,ttl=3600*24):  #   [(key1,desc),(key2,asc)...]
         return self.collect.ensure_index(index_list,ttl=ttl)
-    def id(self):   #   for dict.keys()
-        return self.id
-    def value(self):    #   for dict.values()
-        return self.value
     def filter( self, **args ):
         self.arg = args
     def sort( self, **args ):
@@ -130,9 +129,12 @@ class dictomongo( dict ):
         else:
             out = self.collect.find( spec )
         if out:
-            return list(out)
+            if list(out)>1:
+                return list(out)
+            else:
+                return list(out)[0]
         else:
-            return []
+            return {}
     def __setitem__( self, key, value ):
         if type(key)==type(()):
             spec = dict([key])
@@ -148,6 +150,7 @@ class dictomongo( dict ):
             one.update( value )
         else:
             one[self.value] = value
+        one['_time_'] = time.time()
         self.collect.save( one )
     def __repr__( self ):
         return '\n'.join(map(str,list(self.collect.find())))
@@ -166,11 +169,11 @@ class dictomongo( dict ):
     def __init__( self, collection, 
                     id = 'id',
                     value = 'v',
-                    host = 'localhost', 
+                    host = mongo_server, 
                     port = 27017,
                     user = None,
                     pswd = None,
-                    database_name = 'dict_over_mongo', 
+                    database_name = _DB_Name, 
                     capped = None ):    #  example : {'capped':True,'size':10**10,'max':500}
         self.id = id
         self.value = value
@@ -194,5 +197,7 @@ class dictomongo( dict ):
             else:
                 self.db.create_collection(self.collection)
         self.collect = self.db[self.collection]
+        _time = time.time()-365*24*3600
+        self.collect.remove({'_time_':{'$lt':_time}})
     def error(self):
         return self.collect.get_lasterror_options()
