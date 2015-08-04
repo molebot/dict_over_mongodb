@@ -18,17 +18,6 @@ import requests
 
 def mathlog(a):return mathclog(a).real
 
-def get_image(symbol,level,lens,group,offset,show=False):
-    global symbolstate
-    data = conn[symbol][str(level)]
-    dl = list(data.find(sort=[('_id',desc)],limit=int(lens),skip=int(offset)*int(lens)))
-    if show:
-        texts = symbolstate.get(symbol,['none'])[::-1]
-        return SVG(group,dl[::-1],texts,data).to_html()
-    else:
-        return SVG(group,dl[::-1],['none'],data).to_html()
-
-
 def cffdata(a,b):
     if acc.account=='me':
         dd = {}
