@@ -9,7 +9,7 @@ import thread
 import requests
 import acc
 
-vsn = '20150805.4'
+vsn = '2015.08.06.1'
 
 
 def filelog(symbol,i,j,o):
@@ -19,35 +19,7 @@ def filelog(symbol,i,j,o):
 def getprice(one):
     return (one['h']+one['l'])/2.0
 cache['hh'] = {}
-def get_skip():
-    _day_ = datetime.datetime.now()
-    _hour_ = _day_.strftime('%m%d%H')
-    if cache.get('skip_cache','')==_hour_:
-        return cache['cache_skip']
-    else:
-        _day_ = datetime.datetime.now()
-        hour_str = _hour_
-        if (_day_.isoweekday()==6):
-            out=0
-            if cache['skip'] != hour_str:
-                cache['skip'] = hour_str
-                logger.error('skip weekend end')
-        elif (_day_.month==12 and _day_.day>=30) or (_day_.month==1 and _day_.day<=3):
-            out=0.001
-            if cache['skip'] != hour_str:
-                cache['skip'] = hour_str
-                logger.error('skip new year')
-        elif _day_.isoweekday()==1 and _day_.hour<9:
-            out=0.001
-            if cache['skip'] != hour_str:
-                cache['skip'] = hour_str
-                logger.error('skip weekend begin')
-        else:
-            out=1
-        cache['skip_cache'] = _hour_
-        cache['cache_skip'] = out
-        logger.error('cache_skip')
-        return out
+
 fill_state={}
 all_state={}
 cache['weeks'] = {}
@@ -158,20 +130,12 @@ class Iron:
         _blue = (_fox+_just)/2.0
         _blue = max(-280,_blue)
         _blue = min( 280,_blue)
-        _blue2 = max(pu-162,_blue)
-        _blue2 = min(pn+162,_blue2)
-        old = saved.get('old',[])
-        if old and old[0][0]==c[1][0]['_id']:
-            old = old[1:]
-        old.insert(0,(c[1][0]['_id'],_blue2))
-        saved['old'] = old[:5]
-#        _just = 0#saved['old'][2][1]
+        saved['old'] = []
         ks = max(abs(_max),abs(_min))/max(0.001,_max-_min)
         for i in self.todo:
             c[i][0]['vsn'] = vsn
             c[i][0]['point'] = saved.get('point',c[1][0]['c'])
             c[i][0]['mole'] = _blue
-#            c[i][0]['blue'] = _back
             c[i][0]['just'] = _just# = saved['old'][2][1]
             c[i][0]['k1'] = kmm(1)
             c[i][0]['uuu'] = uuu
@@ -269,12 +233,12 @@ class Iron:
         out['result'] = LS2*dead*closeit
         out['long'] = llong
         out['short'] = short
-        out['fill'] = fill
-        out['uuu'] = uuu
-        out['nnn'] = nnn
-        out['just'] = _blue
-        out['point'] = Point
-        out['profit'] = saved.get('base_p',0)
+#        out['fill'] = fill
+#        out['uuu'] = uuu
+#        out['nnn'] = nnn
+#        out['just'] = _blue
+#        out['point'] = Point
+#        out['profit'] = saved.get('base_p',0)
         #self.state['his']
         if self.state.get('ss',0)!=LS2:
             time_str = _day_.strftime('%m%d%H%M%S')
@@ -389,65 +353,37 @@ class Iron:
         if _last and 'old' not in _todo:
             if 'old' in _last:_last.pop('old')
             _todo['old'] = _last
-#=====================================================================  raw
-        if 'hr' not in _todo:
-            if _last:
-                _todo['hr'] = [getprice(_last)]+_last['hr'][:fibo[-1]]
-            else:
-                _todo['hr'] = []
-        _prcs = getprice(_todo)
-        _list = [_prcs] + _todo['hr']
-        _todo['m']={}
-        _todo['s']={}
-        for i in fibo:
-            _str_ = str(i)
-            if _last:
-                vle = ma(_prcs,_last['m'][_str_],i)
-                _todo['s'][_str_] = st(vle,[one for one in _list[:i]],i)
-            else:
-                vle = _prcs
-                _todo['s'][_str_] = 0.0
-            _todo['m'][_str_] = vle
-#=====================================================================  k
-        #=====clear====
-        if 'hz' not in _todo:
-            if _last:
-                _todo['hz'] = [zmm(_last)]+_last['hz'][:fibo[-1]]
-            else:
-                _todo['hz'] = []
-        _prcs = zmm(_todo)
-        _list = [_prcs] + _todo['hz']
-        _todo['zm']={}
-        _todo['zs']={}
-        for i in fibo:
-            _str_ = str(i)
-            if _last and len(_last.get('zm',{}))==len(fibo):
-                vle = ma(_prcs,_last['zm'][_str_],i)
-                _todo['zs'][_str_] = st(vle,[one for one in _list[:i]],i)
-            else:
-                vle = _prcs
-                _todo['zs'][_str_] = 0.0#
-            _todo['zm'][_str_] = vle
-#=====================================================================  k
-        #=====clear====
-        if 'hx' not in _todo:
-            if _last:
-                _todo['hx'] = [dmm(_last)]+_last.get('hx',[])[:fibo[-1]]
-            else:
-                _todo['hx'] = []
-        _prcs = dmm(_todo)
-        _list = [_prcs] + _todo['hx']
-        _todo['xm']={}
-        _todo['xs']={}
-        for i in fibo:
-            _str_ = str(i)
-            if _last and len(_last.get('xm',{}))==len(fibo):
-                vle = ma(_prcs,_last['xm'][_str_],i)
-                _todo['xs'][_str_] = st(vle,[one for one in _list[:i]],i)
-            else:
-                vle = _prcs
-                _todo['xs'][_str_] = 0.0#
-            _todo['xm'][_str_] = vle
+        _flow = [
+        ('m','s','hr',getprice),
+        ('zm','zs','hz',zmm),
+        ('xm','xs','hx',dmm),
+        ]
+        if _last:
+            for mm,ss,hh,func in _flow:
+                if hh not in _todo:
+                    _todo[hh] = [func(_last)]+_last[hh][:fibo[-1]]
+                _prcs = func(_todo)
+                _list = [_prcs] + _todo[hh]
+                _todo[mm]={}
+                _todo[ss]={}
+                for i in fibo:
+                    _str_ = str(i)
+                    vle = ma(_prcs,_last[mm][_str_],i)
+                    _todo[ss][_str_] = st(vle,[one for one in _list[:i]],i)
+                    _todo[mm][_str_] = vle
+        else:
+            for m,s,h,func in _flow:
+                if hh not in _todo:
+                    _todo[hh] = []
+                _prcs = func(_todo)
+                _list = [_prcs] + _todo[hh]
+                _todo[mm]={}
+                _todo[ss]={}
+                for i in fibo:
+                    _str_ = str(i)
+                    vle = _prcs
+                    _todo[ss][_str_] = 0.0
+                    _todo[mm][_str_] = vle
 #=====================================================================
         _todo['do']=1
         _todo['time'] = time.time()
