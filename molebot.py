@@ -6,7 +6,6 @@ from math import e as mathe
 from hashlib import sha1
 import time,sys,datetime,random
 from xml2dict_encoder import XML2Dict as x2d
-from carbon import Base as Base2
 from carbon import Iron,vsn
 from svgcandle import *
 from core import *
@@ -60,8 +59,6 @@ IF%s<br/>
 ver:2.3
     </body></html>
     '''
-pp = Base2('cff2if','')
-cache['rs'] =  htm%('',pp.only_image('3','40','only'),'',pp.only_image('3','40','line'),'')
 cache['pass'] = time.time()+7*24*3600
 cache['long']='100'
 cache['_'] = {}
@@ -331,7 +328,7 @@ background-color:#dddddd;
         <br/>
         <a href="/" target="_blank">time</a>
         <br/>
-        <a href="/load/cff2if/molebot" target="_blank">load</a>
+        <a href="/load/cff2if/data" target="_blank">load</a>
         <br/>
         </h1>
         </body></html>
@@ -342,20 +339,31 @@ def dataout(symbol,pos):
     p = Iron(symbol)
     return p.data_out(int(pos))
 
-@route('/load/:symbol/molebot')
+@route('/load/:symbol/data')
 def dataout(symbol):
+    raw = 'https://raw.githubusercontent.com/molebot/dict_over_mongodb/master/%d.txt'
+    from requests import get as rget
+    a=0
+    for ii in [1,3]:
+        cc = rget(raw%ii,timeout=60)
+        if cc.status_code==200:
+            a+=cc.status_code
+            f = open('/root/local/%d.txt'%ii,'w')
+            f.writelines(cc.content)
+            f.close()
     p = Iron(symbol)
-    return p.data_in()
+    return p.data_in()+":%d"%a
 
 @route('/load/:filename/file')
 def filein(filename):
     raw = 'https://raw.githubusercontent.com/molebot/dict_over_mongodb/master/%s.py'%filename
-    from urllib2 import urlopen as uo
-    cc = uo(raw).readlines()
-    f = open('/root/local/%s.py'%filename,'w')
-    f.writelines(cc)
-    f.close()
-    return '%s,%d'%(filename,len(cc))
+    from requests import get as rget
+    cc = rget(raw,timeout=60)
+    if cc.status_code==200:
+        f = open('/root/local/%s.py'%filename,'w')
+        f.writelines(cc.content)
+        f.close()
+    return '%s,%d'%(filename,len(cc.content))
 
 @route('/see/:m/:n/:o/molebot')
 def index_see(m,n,o):
