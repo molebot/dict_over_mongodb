@@ -296,7 +296,9 @@ background-color:#dddddd;
         <br/>
         <a href="/" target="_blank">time</a>
         <br/>
-        <a href="/load/cff2if/data" target="_blank">load</a>
+        <a href="/load/cff2if/data" target="_blank">load_data</a>
+        <a href="/load/molebot/file" target="_blank">load_out</a>
+        <a href="/load/carbon/file" target="_blank">load_in</a>
         <br/>
         </h1>
         </body></html>
@@ -326,7 +328,8 @@ def filein(filename):
         f = open('/root/local/%s.py'%filename,'w')
         f.writelines(cc.content)
         f.close()
-    return '%s,%d'%(filename,len(cc.content))
+        return '%s,%d'%(filename,len(cc.content))
+    return 'error'
 
 upstate={}
 @route('/real/:types/:symbol/:price/:vol/')
