@@ -1,6 +1,6 @@
 #coding:utf-8
 from bottle import route,run,debug,request,redirect,response,error,static_file
-import bottle,os,line
+import bottle,os,acc
 from cmath import log as mathclog
 from math import e as mathe
 from hashlib import sha1
@@ -9,9 +9,8 @@ from xml2dict_encoder import XML2Dict as x2d
 from carbon import Iron,vsn
 from svgcandle import *
 from core import *
-from pngcanvas import *
 from handlers import MongoHandler
-from urllib2 import urlopen
+#from urllib2 import urlopen
 from settings import mongo_server
 from qqmail import *
 import thread
@@ -30,35 +29,13 @@ def get_image(symbol,level,lens,group,offset,show=False):
         return SVG(group,dl[::-1],['none'],data).to_html()
 
 
-def cffdata(data,p,data2):
-    htm = u'''<!DOCTYPE html>
-    <html><head><META HTTP-EQUIV="REFRESH" CONTENT="5"><title>%s</title></head><body>
-<table><tr>
-   <td>%s</td>
-   <td><h1>%s<br/></h1></td>
-   <td>%s</td>
-</tr></table><br/>
-    </body></html>
-    '''
-    dd = {}
-    dd['data'] = cache.get('rs','none')
-    r = requests.post('http://molebot.com/cff531',data=dd)
-#    logger.error(r.text)
-    return r.text
-#debug(True)
-#cache['symbol']={'EURUSD':'','AUDUSD':'','USDCAD':''}
-acsy = Shove(cache='memory://',store='mongodb://'+mongo_server+':27017/shove/shove')
-htm = u'''<!DOCTYPE html>
-    <html><head><META HTTP-EQUIV="REFRESH" CONTENT="10"><title>%s</title></head><body>
-<table><tr>
-   <td>%s</td>
-   <td><h1>%s<br/></h1></td>
-   <td>%s</td>
-</tr></table>
-IF%s<br/>
-ver:2.3
-    </body></html>
-    '''
+def cffdata(a,b):
+    if acc.account=='me':
+        dd = {}
+        dd['data'] = cache.get('rs','none')
+        r = requests.post('http://molebot.com/cff531',data=dd)
+        return r.text
+
 cache['pass'] = time.time()+7*24*3600
 cache['long']='100'
 cache['_'] = {}
@@ -66,7 +43,6 @@ cache['_'] = {}
 def now():return datetime.datetime.now()
 def logten():
     if cache['pass']<time.time():
-        import os
         alertmail('%s reboot'%acc.account)
         os.system("reboot")
     ip = request['REMOTE_ADDR']
@@ -144,6 +120,7 @@ def show_logs():
 def passok(s):
     global cache
     cache['pass'] = int(s)*24*3600*21+time.time()
+    thread.start_new_thread(cffdata,(1,2))
     return 'ok'
 
 @route('/kaiguan')
@@ -181,7 +158,9 @@ ver:%s
     </body></html>
     '''
         pp = Iron('cff2if')
-        return htm%(str(datetime.datetime.now()),str(cache.get('result',{})),pp.get_image('3','80','only'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
+        rs = htm%(str(datetime.datetime.now()),str(cache.get('result',{})),pp.get_image('3','80','only'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
+        cache['rs'] = rs
+        return rs
 
 @route('/1s/')
 def index21s():
@@ -334,11 +313,6 @@ background-color:#dddddd;
         </body></html>
         '''
 
-@route('/data/:symbol/:pos/molebot')
-def dataout(symbol,pos):
-    p = Iron(symbol)
-    return p.data_out(int(pos))
-
 @route('/load/:symbol/data')
 def dataout(symbol):
     raw = 'https://raw.githubusercontent.com/molebot/dict_over_mongodb/master/%d.txt'
@@ -364,15 +338,6 @@ def filein(filename):
         f.writelines(cc.content)
         f.close()
     return '%s,%d'%(filename,len(cc.content))
-
-@route('/see/:m/:n/:o/molebot')
-def index_see(m,n,o):
-    logten()
-    l = cache['long']
-    _strong = cache['symbol'].items()
-    return '''
-        <html><head><title>%s</title></head><body>%s</body></html>
-    '''%(o,'<hr/>'.join([Iron('cff2if').get_data(m,l,n,offset=o) for one in _strong]))
 
 upstate={}
 @route('/real/:types/:symbol/:price/:vol/')
@@ -417,7 +382,9 @@ def doreal(types,symbol,price,vol):
 cff={}
 @route('/cffif/:p/data')
 def apicff(p):#	s symbol b deadline_base o base a account t aceq p price
-    if '192.168.' in request['REMOTE_ADDR'] :
+    _day = datetime.datetime.now()
+    _time = _day.hour*60+_day.minute
+    if '192.168.' in request['REMOTE_ADDR'] and ( 555<=_time<=690 or 780<=_time<=915 ):
         global cache
         tt = time.time()
         pp = Iron('cff2if')
@@ -446,4 +413,3 @@ def apicff(p):#	s symbol b deadline_base o base a account t aceq p price
         logger.error("ERROR DATA REQUEST")
         logger.error('url @ %s [ %s ]'%(request.environ['PATH_INFO'],request['REMOTE_ADDR']))
         return 'd'
-

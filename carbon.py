@@ -233,7 +233,7 @@ class Iron:
             saved['real'] = self.realprice
             saved['point'] = Point = c[1][0]['c']
             c[i][0]['point'] = c[1][0]['c']
-            
+
             c[_pos_][0]['doit']=1
             self.cache[_pos_][0] = c[_pos_][0]
             self.save(_pos_,c[_pos_][0])
