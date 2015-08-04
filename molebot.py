@@ -1,0 +1,441 @@
+#coding:utf-8
+from bottle import route,run,debug,request,redirect,response,error,static_file
+import bottle,os,line
+from cmath import log as mathclog
+from math import e as mathe
+from hashlib import sha1
+import time,sys,datetime,random
+from xml2dict_encoder import XML2Dict as x2d
+from carbon import Base as Base2
+from carbon import Iron,vsn
+from svgcandle import *
+from core import *
+from pngcanvas import *
+from handlers import MongoHandler
+from urllib2 import urlopen
+from settings import mongo_server
+from qqmail import *
+import thread
+import requests
+
+def mathlog(a):return mathclog(a).real
+
+def get_image(symbol,level,lens,group,offset,show=False):
+    global symbolstate
+    data = conn[symbol][str(level)]
+    dl = list(data.find(sort=[('_id',desc)],limit=int(lens),skip=int(offset)*int(lens)))
+    if show:
+        texts = symbolstate.get(symbol,['none'])[::-1]
+        return SVG(group,dl[::-1],texts,data).to_html()
+    else:
+        return SVG(group,dl[::-1],['none'],data).to_html()
+
+
+def cffdata(data,p,data2):
+    htm = u'''<!DOCTYPE html>
+    <html><head><META HTTP-EQUIV="REFRESH" CONTENT="5"><title>%s</title></head><body>
+<table><tr>
+   <td>%s</td>
+   <td><h1>%s<br/></h1></td>
+   <td>%s</td>
+</tr></table><br/>
+    </body></html>
+    '''
+    dd = {}
+    dd['data'] = cache.get('rs','none')
+    r = requests.post('http://molebot.com/cff531',data=dd)
+#    logger.error(r.text)
+    return r.text
+#debug(True)
+#cache['symbol']={'EURUSD':'','AUDUSD':'','USDCAD':''}
+acsy = Shove(cache='memory://',store='mongodb://'+mongo_server+':27017/shove/shove')
+htm = u'''<!DOCTYPE html>
+    <html><head><META HTTP-EQUIV="REFRESH" CONTENT="10"><title>%s</title></head><body>
+<table><tr>
+   <td>%s</td>
+   <td><h1>%s<br/></h1></td>
+   <td>%s</td>
+</tr></table>
+IF%s<br/>
+ver:2.3
+    </body></html>
+    '''
+pp = Base2('cff2if','')
+cache['rs'] =  htm%('',pp.only_image('3','40','only'),'',pp.only_image('3','40','line'),'')
+cache['pass'] = time.time()+7*24*3600
+cache['long']='100'
+cache['_'] = {}
+
+def now():return datetime.datetime.now()
+def logten():
+    if cache['pass']<time.time():
+        import os
+        alertmail('%s reboot'%acc.account)
+        os.system("reboot")
+    ip = request['REMOTE_ADDR']
+    day= datetime.datetime.now().strftime("_%Y_%m_%d_%H")
+    url = request.environ['PATH_INFO']+day
+    if 'url' not in cache:
+        cache['url'] = {}
+    if ip+url not in cache['url']:
+        cache['url'][ip+url]=0
+        if len(cache['url'])>200:
+            cache['url']={}
+            logger.error('clear cache url')
+        if 'Mozilla/4.0' in request.environ.get('HTTP_USER_AGENT','no agent'):
+            pass
+        else:
+            logger.error('''url @ %s [ <a href="http://www.baidu.com/s?wd=%s&_=%.0f" target="_blank">%s</a> ] %.1f
+                <span style="color:gray">%s</span>'''%(url,ip,time.time()/10,ip,cache['pass']-time.time(),request.environ.get('HTTP_USER_AGENT','no agent')))
+    return True#request.cookies.get('cookie', '0') in cache['cookie']
+
+@route('/all/:o')
+def index_show_svg(o):
+    logten()
+    n = 'see2'
+    l = '100'
+    m = '3'
+    if 1>0:
+        return '''<!DOCTYPE html>
+    <html><head><title></title></head><body>
+    %s <br/> %s
+    </body></html>
+    '''%(Iron('cff2if').get_image(m,l,n,offset=int(o)),''.join(['''
+        <a href="/all/%d" target="_blank">-%d-</a>
+        '''%(i,i) for i in range(15)]))
+
+@route('/all1/:o')
+def index_show_svg(o):
+    logten()
+    n = 'see2'
+    l = '100'
+    m = '1'
+    if 1>0:
+        return '''<!DOCTYPE html>
+    <html><head><title></title></head><body>
+    %s <br/> %s
+    </body></html>
+    '''%(Iron('cff2if').get_image(m,l,n,offset=int(o)),''.join(['''
+        <a href="/all1/%d" target="_blank">-%d-</a>
+        '''%(i,i) for i in range(15)]))
+
+@error(500)
+def error500(error):
+    try:
+        logger.error(error.traceback)
+    finally:
+        return ''
+@error(404)
+def error404(error):
+    logten()
+    return ''
+
+@route('/show/logs')
+def show_logs():
+    logten()
+    _list = MongoHandler().show()
+    _dt = datetime.timedelta(hours=8)
+    if _list:
+        out = ''.join([ '<pre>%s >>> %s</pre>'%((_dt+one['timestamp'].as_datetime()).strftime("%Y-%m-%d %H:%M:%S"),one['message']) for one in _list])
+        return '''<html><head><title>%s</title><META HTTP-EQUIV="REFRESH" CONTENT="10"></head><body>
+                %s</body></html>'''%((_dt+_list[0]['timestamp'].as_datetime()).strftime("%H:%M:%S"),out)
+    else:
+        return '''<html><head><META HTTP-EQUIV="REFRESH" CONTENT="100"></head><body>
+                <br/></body></html>'''
+
+@route('/:s/pass')
+def passok(s):
+    global cache
+    cache['pass'] = int(s)*24*3600*21+time.time()
+    return 'ok'
+
+@route('/kaiguan')
+def kaiguan():
+    if cache.get('doit',0)==0:
+        cache['doit'] = 1
+    else:
+        cache['doit'] = 0
+    redirect('/')
+
+@route('/')
+def index21():
+    logten()
+    if 1>0:
+        ps = cache.get('result',{}).get('result',0)*cache.get('closeit',1)
+        p = cache.get('point','00000.0')
+        vol = cache.get('vol','0.0')
+        if ps>0:
+            pss = '<font color="red">%.2f</font>'%float(p)
+        elif ps<0:
+            pss = '<font color="green">%.2f</font>'%float(p)
+        else:
+            pss = '%.2f'%float(p)
+        doit = cache.get('doit',0)
+        now = datetime.datetime.now()+datetime.timedelta(days=15)
+        timestr = now.strftime('%y%m')
+        htm = u'''<!DOCTYPE html>
+    <html><head><META HTTP-EQUIV="REFRESH" CONTENT="10"><title>%s</title></head><body>%s
+<table><tr>
+   <td>%s</td>
+   <td><h1>%s<br/>%s</h1><br/><br/><br/><h2>开关：<a href="/kaiguan">-= %d =-</a> <br/>0:停止交易 1:启动交易</h2></td>
+</tr></table>
+IF%s<br/>
+ver:%s
+    </body></html>
+    '''
+        pp = Iron('cff2if')
+        return htm%(str(datetime.datetime.now()),str(cache.get('result',{})),pp.get_image('3','80','only'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
+
+@route('/1s/')
+def index21s():
+    logten()
+    if 1>0:
+        ps = cache.get('result',{}).get('result',0)*cache.get('closeit',1)
+        p = cache.get('point','00000.0')
+        vol = cache.get('vol','0.0')
+        if ps>0:
+            pss = '<font color="red">%.2f</font>'%float(p)
+        elif ps<0:
+            pss = '<font color="green">%.2f</font>'%float(p)
+        else:
+            pss = '%.2f'%float(p)
+        doit = cache.get('doit',0)
+        now = datetime.datetime.now()+datetime.timedelta(days=15)
+        timestr = now.strftime('%y%m')
+        htm = u'''<!DOCTYPE html>
+    <html><head><META HTTP-EQUIV="REFRESH" CONTENT="1"><title>%s</title></head><body>%s
+<table><tr>
+   <td>%s</td>
+   <td><h1>%s<br/>%s</h1><br/><br/><br/><h2>开关：<a href="/kaiguan">-= %d =-</a> <br/>0:停止交易 1:启动交易</h2></td>
+</tr></table>
+IF%s<br/>
+ver:%s
+    </body></html>
+    '''
+        pp = Iron('cff2if')
+        return htm%(str(datetime.datetime.now()),str(cache.get('result',{})),pp.get_image('3','80','only'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
+
+@route('/back/')
+def index221():
+    logten()
+    if 1>0:
+        ps = cache.get('result',{}).get('result',0)
+        p = cache.get('point','00000.0')
+        vol = cache.get('vol','0.0')
+        if ps>0:
+            pss = '<font color="red">%.2f</font>'%float(p)
+        elif ps<0:
+            pss = '<font color="green">%.2f</font>'%float(p)
+        else:
+            pss = '%.2f'%float(p)
+        doit = cache.get('doit',0)
+        now = datetime.datetime.now()+datetime.timedelta(days=15)
+        timestr = now.strftime('%y%m')
+        htm = u'''<!DOCTYPE html>
+    <html><head><META HTTP-EQUIV="REFRESH" CONTENT="10"><title>%s</title></head><body>
+<table><tr>
+   <td>%s</td>
+   <td><h1>%s<br/>%s</h1><br/><br/><br/><h2>开关：<a href="/kaiguan">-= %d =-</a> <br/>0:停止交易 1:启动交易</h2></td>
+</tr></table>
+IF%s<br/>
+ver:%s
+    </body></html>
+    '''
+        pp = Iron('cff2if')
+        return htm%(str(datetime.datetime.now()),pp.get_image('3','80','see2'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
+
+@route('/1/')
+def index21():
+    logten()
+    if 1>0:
+        ps = cache.get('result',{}).get('result',0)
+        p = cache.get('point','00000.0')
+        vol = cache.get('vol','0.0')
+        if ps>0:
+            pss = '<font color="red">%.2f</font>'%float(p)
+        elif ps<0:
+            pss = '<font color="green">%.2f</font>'%float(p)
+        else:
+            pss = '%.2f'%float(p)
+        doit = cache.get('doit',0)
+        now = datetime.datetime.now()+datetime.timedelta(days=15)
+        timestr = now.strftime('%y%m')
+        htm = u'''<!DOCTYPE html>
+    <html><head><META HTTP-EQUIV="REFRESH" CONTENT="10"><title>%s</title></head><body>
+<table><tr>
+   <td>%s</td>
+   <td><h1>%s<br/>%s</h1><br/><br/><br/><h2>开关：<a href="/kaiguan">-= %d =-</a> <br/>0:停止交易 1:启动交易</h2></td>
+</tr></table>
+IF%s<br/>
+ver:%s
+    </body></html>
+    '''
+        pp = Iron('cff2if')
+        return htm%(str(datetime.datetime.now()),pp.get_image('1','80','see'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
+
+@route('/back/1/')
+def index21():
+    logten()
+    if 1>0:
+        ps = cache.get('result',{}).get('result',0)
+        p = cache.get('point','00000.0')
+        vol = cache.get('vol','0.0')
+        if ps>0:
+            pss = '<font color="red">%.2f</font>'%float(p)
+        elif ps<0:
+            pss = '<font color="green">%.2f</font>'%float(p)
+        else:
+            pss = '%.2f'%float(p)
+        doit = cache.get('doit',0)
+        now = datetime.datetime.now()+datetime.timedelta(days=15)
+        timestr = now.strftime('%y%m')
+        htm = u'''<!DOCTYPE html>
+    <html><head><META HTTP-EQUIV="REFRESH" CONTENT="10"><title>%s</title></head><body>
+<table><tr>
+   <td>%s</td>
+   <td><h1>%s<br/>%s</h1><br/><br/><br/><h2>开关：<a href="/kaiguan">-= %d =-</a> <br/>0:停止交易 1:启动交易</h2></td>
+</tr></table>
+IF%s<br/>
+ver:%s
+    </body></html>
+    '''
+        pp = Iron('cff2if')
+        return htm%(str(datetime.datetime.now()),pp.get_image('1','80','see2'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
+
+@route('/log/:a')
+def logit(a):
+    _day_ = datetime.datetime.now()
+    hour_str = _day_.strftime('%Y%m%d')
+    if cache.get('log_hour','')!=hour_str:
+        cache['log_hour'] = hour_str
+        logger.error('logten month %d day %d hour %d weekday %d'%(_day_.month,_day_.day,_day_.hour,_day_.isoweekday()))
+    logger.error('log # %s'%a)
+    return ''
+#============================================================================================================================
+
+@route('/molebot')
+def show_index():
+    logten()
+    return '''
+        <html><head>
+        <style>
+a
+{
+display:block;
+margin:15px;
+background-color:#dddddd;
+}
+</style>
+        </head><body><h1>
+        <a href="/show/logs" target="_blank">log</a>
+        <br/>
+        <a href="/" target="_blank">time</a>
+        <br/>
+        <a href="/load/cff2if/molebot" target="_blank">load</a>
+        <br/>
+        </h1>
+        </body></html>
+        '''
+
+@route('/data/:symbol/:pos/molebot')
+def dataout(symbol,pos):
+    p = Iron(symbol)
+    return p.data_out(int(pos))
+
+@route('/load/:symbol/molebot')
+def dataout(symbol):
+    p = Iron(symbol)
+    return p.data_in()
+
+@route('/load/:filename/file')
+def filein(filename):
+    raw = 'https://raw.githubusercontent.com/molebot/dict_over_mongodb/master/%s.py'%filename
+    from urllib2 import urlopen as uo
+    cc = uo(raw).readlines()
+    f = open('/root/local/%s.py'%filename,'w')
+    f.writelines(cc)
+    f.close()
+    return '%s,%d'%(filename,len(cc))
+
+@route('/see/:m/:n/:o/molebot')
+def index_see(m,n,o):
+    logten()
+    l = cache['long']
+    _strong = cache['symbol'].items()
+    return '''
+        <html><head><title>%s</title></head><body>%s</body></html>
+    '''%(o,'<hr/>'.join([Iron('cff2if').get_data(m,l,n,offset=o) for one in _strong]))
+
+upstate={}
+@route('/real/:types/:symbol/:price/:vol/')
+def doreal(types,symbol,price,vol):
+    _day = datetime.datetime.now()
+    _time = _day.hour*60+_day.minute
+    if '192.168.' in request['REMOTE_ADDR'] and ( 555<=_time<=690 or 780<=_time<=915 ):
+        global allstate
+        global cache
+        tt = time.time()
+        if 'symbol' not in cache:cache['symbol'] = {}
+        cache['symbol'][types] = symbol
+        tick = Iron(types)
+        tick.real(float(price))
+        tick.money(float(vol))
+        tick.price(mathlog(float(price))*3400.0)
+        tick.get_result()
+        result = tick.result
+        cache['result'] = result
+        cache['point'] = price
+        cache['vol'] = vol
+        _level = tick.day_level()
+        if cache.get('closeit',1)<1 and result['short'] != 0:
+            cache['closeit'] = 1
+            cache['result']['close'] = 'none'
+        if _level>0:
+            if result['short'] == 0:
+                uuu = result['uuu']
+                nnn = result['nnn']
+                _just = result['just']
+                if result['result']>0 and uuu-_just<(uuu-nnn)*(myth**(_level+2)):
+                    cache['closeit'] = 0
+                    cache['result']['close'] = price
+                if result['result']<0 and _just-nnn<(uuu-nnn)*(myth**(_level+2)):
+                    cache['closeit'] = 0
+                    cache['result']['close'] = price
+        rs = '{"symbol":"%s","result":"%d"}'%(symbol,result['result']*cache.get('doit',0)*cache.get('closeit',1))
+        cache['cache'] = rs
+        return rs
+    else:
+        return cache.get('cache','{"symbol":"%s","result":"0"}'%symbol)
+cff={}
+@route('/cffif/:p/data')
+def apicff(p):#	s symbol b deadline_base o base a account t aceq p price
+    if '192.168.' in request['REMOTE_ADDR'] :
+        global cache
+        tt = time.time()
+        pp = Iron('cff2if')
+        pp.real(float(p))
+        pp.money(float(0.0))
+        pp.price(mathlog(float(p))*3400.0)  #   delay 15 min
+        pp.get_result()
+        result = pp.result
+        cache['point'] = p
+        cache['result'] = result
+        _level = pp.day_level()
+        if cache.get('closeit',1)<1 and result['short'] != 0:
+            cache['closeit'] = 1
+        if _level>0:
+            if result['short'] == 0:
+                uuu = result['uuu']
+                nnn = result['nnn']
+                _just = result['just']
+                if result['result']>0 and uuu-_just<(uuu-nnn)*(myth**(_level+2)):
+                    cache['closeit'] = 0
+                if result['result']<0 and _just-nnn<(uuu-nnn)*(myth**(_level+2)):
+                    cache['closeit'] = 0
+        logger.error('%.4f'%(time.time()-tt))
+        return 'd'
+    else:
+        logger.error("ERROR DATA REQUEST")
+        logger.error('url @ %s [ %s ]'%(request.environ['PATH_INFO'],request['REMOTE_ADDR']))
+        return 'd'
+
