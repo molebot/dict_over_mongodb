@@ -306,6 +306,10 @@ background-color:#dddddd;
         </body></html>
         '''
 
+@route('/data/:symbol/:pos/molebot')
+def dataout2(symbol,pos):
+    return Iron(symbol).data_out(int(pos))
+
 @route('/load/:symbol/data')
 def dataout(symbol):
     raw = 'https://raw.githubusercontent.com/molebot/dict_over_mongodb/master/%d.txt'
