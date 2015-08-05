@@ -9,7 +9,7 @@ import thread
 import requests
 import acc
 
-vsn = '2015.08.06.7'
+vsn = '2015.08.06.+2'
 
 
 def filelog(symbol,i,j,o):
