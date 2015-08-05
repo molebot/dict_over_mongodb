@@ -19,7 +19,9 @@ import requests
 def mathlog(a):return mathclog(a).real
 
 def cffdata(a,b):
-    if acc.account=='me':
+    _day = datetime.datetime.now()
+    _time = _day.hour*60+_day.minute
+    if acc.account=='me' and ( 555<=_time<=690 or 780<=_time<=915 ):
         dd = {}
         dd['data'] = cache.get('rs','none')
         r = requests.post('http://molebot.com/cff531',data=dd)
@@ -132,7 +134,7 @@ def index21():
         elif ps<0:
             pss = '<font color="green">%.2f</font>'%float(p)
         else:
-            pss = '%.2f'%float(p)
+            pss = '<font color="gray">%.2f</font>'%float(p)
         doit = cache.get('doit',0)
         now = datetime.datetime.now()+datetime.timedelta(days=15)
         timestr = now.strftime('%y%m')
