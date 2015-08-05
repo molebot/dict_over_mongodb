@@ -9,7 +9,7 @@ import thread
 import requests
 import acc
 
-vsn = '2015.08.06.2'
+vsn = '2015.08.06.4'
 
 
 def filelog(symbol,i,j,o):
@@ -126,9 +126,9 @@ class Iron:
         uuu=min(uuu, 100*(1+myth))#*2.0
         nnn=max(nnn,-100*(1+myth))#*2.0
         if uuu<100*myth:
-            uuu += (100*myth-uuu)*2.0
+            uuu = (100*myth-uuu)+100*myth
         if nnn>-100*myth:
-            nnn -= (nnn-100*myth)*2.0
+            nnn = -1*(nnn-100*myth)-100*myth
         _blue = (_fox+_just)/2.0
         _blue = max(-280,_blue)
         _blue = min( 280,_blue)
