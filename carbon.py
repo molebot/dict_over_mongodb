@@ -9,7 +9,7 @@ import thread
 import requests
 import acc
 
-vsn = '2015.08.06.1+2'
+vsn = '2015.08.06.1+2c'
 
 
 def filelog(symbol,i,j,o):
@@ -213,8 +213,8 @@ class Iron:
             elif _day_.hour==15:
                 saved['dead'] = dead = 0
                 saved['daybaseday']==0
-            elif zz(3,0,7,1,q=-2)*zz(3,0,7,-1,q=-2)>0 and LS2*zz(3,0,7,0)<0:
-                saved['dead'] = dead = 0
+#            elif zz(3,0,7,1,q=-2)*zz(3,0,7,-1,q=-2)>0 and LS2*zz(3,0,7,0)<0:
+#                saved['dead'] = dead = 0
             else:
                 saved['dead'] = dead = 1
                 saved['daybaseday']==1
