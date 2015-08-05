@@ -142,8 +142,8 @@ class Iron:
             c[i][0]['k1'] = kmm(1)
             c[i][0]['uuu'] = uuu
             c[i][0]['nnn'] = nnn
-            c[i][0]['uu'] = uu#zz(1,0,7, 1,q=-2)
-            c[i][0]['nn'] = nn#zz(1,0,7,-1,q=-2)
+            c[i][0]['uu'] = zz(3,0,7, 1,q=-2)
+            c[i][0]['nn'] = zz(3,0,7,-1,q=-2)
             c[i][0]['fox'] = _blue
             self.cache[i][0] = c[i][0]
             self.save(i,c[i][0])
