@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.06.clear'
+vsn = '2015.08.05.clear'
 
 
 
@@ -211,15 +211,15 @@ class Iron:
             saved['fill'] = fill = 0
             if _day_.hour==9 and _day_.minute<30:
                 saved['dead'] = dead = 0
-                saved['daybaseday']==0
+                saved['daybaseday']=0
             elif _day_.hour==15:
                 saved['dead'] = dead = 0
-                saved['daybaseday']==0
+                saved['daybaseday']=0
 #            elif zz(3,0,7,1,q=-2)*zz(3,0,7,-1,q=-2)>0 and LS2*zz(3,0,7,0)<0:
 #                saved['dead'] = dead = 0
             else:
                 saved['dead'] = dead = 1
-                saved['daybaseday']==1
+                saved['daybaseday'] = 1
 
             if dead>0 and saved.get('daybaseday',0)==0:
                 saved['daybase'] = saved.get('base_p',0.0)
@@ -231,7 +231,7 @@ class Iron:
         #=======================================
         if _day_.hour==15 and _day_.minute>10:
             saved['dead'] = dead = 0
-            saved['daybaseday']==0
+            saved['daybaseday']=0
             closeit = 0
         else:
             closeit = 1
