@@ -165,7 +165,7 @@ def index21s():
         elif ps<0:
             pss = '<font color="green">%.2f</font>'%float(p)
         else:
-            pss = '%.2f'%float(p)
+            pss = '<font color="gray">%.2f</font>'%float(p)
         doit = cache.get('doit',0)
         now = datetime.datetime.now()+datetime.timedelta(days=15)
         timestr = now.strftime('%y%m')
@@ -194,7 +194,7 @@ def index221():
         elif ps<0:
             pss = '<font color="green">%.2f</font>'%float(p)
         else:
-            pss = '%.2f'%float(p)
+            pss = '<font color="gray">%.2f</font>'%float(p)
         doit = cache.get('doit',0)
         now = datetime.datetime.now()+datetime.timedelta(days=15)
         timestr = now.strftime('%y%m')
@@ -223,7 +223,7 @@ def index21():
         elif ps<0:
             pss = '<font color="green">%.2f</font>'%float(p)
         else:
-            pss = '%.2f'%float(p)
+            pss = '<font color="gray">%.2f</font>'%float(p)
         doit = cache.get('doit',0)
         now = datetime.datetime.now()+datetime.timedelta(days=15)
         timestr = now.strftime('%y%m')
@@ -252,7 +252,7 @@ def index21():
         elif ps<0:
             pss = '<font color="green">%.2f</font>'%float(p)
         else:
-            pss = '%.2f'%float(p)
+            pss = '<font color="gray">%.2f</font>'%float(p)
         doit = cache.get('doit',0)
         now = datetime.datetime.now()+datetime.timedelta(days=15)
         timestr = now.strftime('%y%m')
