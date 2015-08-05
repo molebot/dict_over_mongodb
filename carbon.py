@@ -9,11 +9,9 @@ import thread
 import requests
 import acc
 
-<<<<<<< HEAD
+
 vsn = '2015.08.06.1+2c'
-=======
-vsn = '2015.08.06.1+2b'
->>>>>>> origin/master
+
 
 
 def filelog(symbol,i,j,o):
