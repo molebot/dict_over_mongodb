@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.05.clear'
+vsn = '2015.08.05.point_ma'
 
 
 
