@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.05.point_ma'
+vsn = '2015.08.05.point_plus'
 
 
 
@@ -131,6 +131,10 @@ class Iron:
             uuu = 100*myth+(100*myth-uuu)
         if nnn>-100*myth:
             nnn = -100*myth-(nnn+100*myth)
+        uu = (uuu+zz(3,0,7, 1,q=-2))/2.0
+        nn = (nnn+zz(3,0,7,-1,q=-2))/2.0
+        uu,uuu = uuu,uu
+        nn,nnn = nnn,nn
         _blue = (_fox+_just)/2.0
         _blue = max(-280,_blue)
         _blue = min( 280,_blue)
@@ -144,8 +148,8 @@ class Iron:
             c[i][0]['k1'] = kmm(1)
             c[i][0]['uuu'] = uuu
             c[i][0]['nnn'] = nnn
-            c[i][0]['uu'] = zz(3,0,7, 1,q=-2)
-            c[i][0]['nn'] = zz(3,0,7,-1,q=-2)
+            c[i][0]['uu'] = uu
+            c[i][0]['nn'] = nn
             c[i][0]['fox'] = _blue
             self.cache[i][0] = c[i][0]
             self.save(i,c[i][0])
