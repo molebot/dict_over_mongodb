@@ -208,6 +208,7 @@ class Iron:
 
             LS = LS2
             saved['base_p']=saved.get('base_p',0)+_profit
+            saved['base_ma'] = ma(saved['base_p'],saved.get('base_ma',0),5)
             saved['fill'] = fill = 0
             if _day_.hour==9 and _day_.minute<30:
                 saved['dead'] = dead = 0
@@ -242,7 +243,7 @@ class Iron:
 #        out['uuu'] = uuu
 #        out['nnn'] = nnn
 #        out['just'] = _blue
-#        out['point'] = Point
+        out['point'] = saved.get('base_p',0)-max(saved.get('base_ma',0),saved.get('daybase',0))
 #        out['profit'] = saved.get('base_p',0)
         #self.state['his']
         if self.state.get('ss',0)!=LS2:
@@ -255,7 +256,7 @@ class Iron:
         self.all_result()
     def day_level(self):
         saved = self.state
-        _p = saved.get('base_p',0)-saved.get('daybase',0)
+        _p = saved.get('base_p',0)-max(saved.get('base_ma',0),saved.get('daybase',0))
         if _p<-20:
             return 1
         elif _p<-10:
