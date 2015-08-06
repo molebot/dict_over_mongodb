@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.05.point_plus'
+vsn = '2015.08.05.point_plus+'
 
 
 
@@ -133,8 +133,8 @@ class Iron:
             nnn = -100*myth-(nnn+100*myth)
         uu = (uuu+zz(3,0,7, 1,q=-2))/2.0
         nn = (nnn+zz(3,0,7,-1,q=-2))/2.0
-        uu,uuu = uuu,uu
-        nn,nnn = nnn,nn
+#        uu,uuu = uuu,uu
+#        nn,nnn = nnn,nn
         _blue = (_fox+_just)/2.0
         _blue = max(-280,_blue)
         _blue = min( 280,_blue)
