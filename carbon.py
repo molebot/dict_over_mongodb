@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.05.point_plus+'
+vsn = '2015.08.08.end'
 
 
 
@@ -158,7 +158,7 @@ class Iron:
         llong = saved.get('long',1)
         dead = saved.get('dead',0)
         LS = saved.get('ls',1)
-        Point = saved.get('point',0)
+        Point = saved.get('point',c[1][0]['c'])
         real = saved.get('real',self.realprice)
         fill = saved.get('fill',0)
         daybase = saved.get('daybase',0.0)
@@ -211,24 +211,21 @@ class Iron:
             self.save(_pos_,c[_pos_][0])
 
             LS = LS2
-            saved['base_p']=saved.get('base_p',0)+_profit
             saved['base_ma'] = ma(saved['base_p'],saved.get('base_ma',0),5)
             saved['fill'] = fill = 0
             if _day_.hour==9 and _day_.minute<30:
                 saved['dead'] = dead = 0
-                saved['daybaseday']=0
+                saved['base_p']=0
             elif _day_.hour==15:
                 saved['dead'] = dead = 0
-                saved['daybaseday']=0
-#            elif zz(3,0,7,1,q=-2)*zz(3,0,7,-1,q=-2)>0 and LS2*zz(3,0,7,0)<0:
-#                saved['dead'] = dead = 0
+                saved['base_p']=0
             else:
                 saved['dead'] = dead = 1
-                saved['daybaseday'] = 1
-
-            if dead>0 and saved.get('daybaseday',0)==0:
-                saved['daybase'] = saved.get('base_p',0.0)
-                saved['daybaseday'] = 1
+                _p = saved.get('base_p',0)
+                if _p==0:
+                    saved['base_p'] = 0.0001
+                else:
+                    saved['base_p'] = _p+_profit
 
         if fill<1:
             if LS2*(c[1][0]['c']-Point)>=10:
@@ -236,7 +233,7 @@ class Iron:
         #=======================================
         if _day_.hour==15 and _day_.minute>10:
             saved['dead'] = dead = 0
-            saved['daybaseday']=0
+            saved['base_p']=0
             closeit = 0
         else:
             closeit = 1
@@ -247,20 +244,20 @@ class Iron:
 #        out['uuu'] = uuu
 #        out['nnn'] = nnn
 #        out['just'] = _blue
-        out['point'] = saved.get('base_p',0)-max(saved.get('base_ma',0),saved.get('daybase',0))
+        out['point'] = saved.get('base_p',0)#-max(saved.get('base_ma',0),saved.get('daybase',0))
 #        out['profit'] = saved.get('base_p',0)
         #self.state['his']
         if self.state.get('ss',0)!=LS2:
-            time_str = _day_.strftime('%m%d%H%M%S')
+            time_str = _day_.strftime('%m.%d.%H:%M:%S')
             self.state['ss']=LS2
             _his = self.state.get('his',['none'])
-            _his.append('%s#%.1f=%d@%.1f'%(time_str,self.realprice,LS2,saved.get('base_p',0)-saved.get('daybase',0)))
-            self.state['his'] = _his[-21:]
+            _his.append('%s#%.1f=%d@%.1f'%(time_str,self.realprice,LS2,saved.get('base_p',0)))
+            self.state['his'] = _his[-26:]
         self.result = out
         self.all_result()
     def day_level(self):
         saved = self.state
-        _p = saved.get('base_p',0)-max(saved.get('base_ma',0),saved.get('daybase',0))
+        _p = saved.get('base_p',0)*0#-max(saved.get('base_ma',0),saved.get('daybase',0))
         if _p<-20:
             return 1
         elif _p<-10:
