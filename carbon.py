@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.08.1'
+vsn = '2015.08.08.2'
 
 
 
@@ -351,7 +351,7 @@ class Iron:
             self.check_len(pos)
             now = self.check_base(pos,now,last)
             saved = self.state
-            _p = saved.get('base_p',0)-saved.get('daybase',0)
+            _p = saved.get('base_p',0)#-saved.get('daybase',0)
             thread.start_new_thread(alertmail,('%s_%.1f_%.1f'%(acc.account,self.money,_p),))
             return (new,now)
         return (now,last)
