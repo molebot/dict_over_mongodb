@@ -131,8 +131,8 @@ class Iron:
             uuu = 100*myth+(100*myth-uuu)
         if nnn>-100*myth:
             nnn = -100*myth-(nnn+100*myth)
-        uu = (uuu+zz(3,0,7, 1,q=-2))/2.0
-        nn = (nnn+zz(3,0,7,-1,q=-2))/2.0
+#        uu = (uuu+zz(3,0,7, 1,q=-2))/2.0
+#        nn = (nnn+zz(3,0,7,-1,q=-2))/2.0
 #        uu,uuu = uuu,uu
 #        nn,nnn = nnn,nn
         _blue = (_fox+_just)/2.0
