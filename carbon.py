@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.08.2'
+vsn = '2015.08.08.3'
 
 
 
@@ -121,18 +121,16 @@ class Iron:
         nn = -1*nk*zz(1,0,7, 1,q=-2)
         uu2 = uu-myth*nn
         nn2 = nn-myth*uu
-        pu = max(0,nnn)
-        pn = min(0,uuu)
-        uu,uuu = uuu,uu2
-        nn,nnn = nnn,nn2
+        uu = zz(1,0,7, 1,q=-2)*myth-1*zz(1,0,7,-1,q=-2)
+        nn = zz(1,0,7,-1,q=-2)*myth-1*zz(1,0,7, 1,q=-2)
+        uu,uuu = uu2,uu
+        nn,nnn = nn2,nn
         uuu=min(uuu, 100*(1+myth))#*2.0
         nnn=max(nnn,-100*(1+myth))#*2.0
         if uuu<100*myth:
             uuu = 100*myth+(100*myth-uuu)
         if nnn>-100*myth:
             nnn = -100*myth-(nnn+100*myth)
-        uu = zz(1,0,7, 1,q=-2)*myth-1*zz(1,0,7,-1,q=-2)
-        nn = zz(1,0,7,-1,q=-2)*myth-1*zz(1,0,7, 1,q=-2)
 #        uu,uuu = uuu,uu
 #        nn,nnn = nnn,nn
         _blue = (_fox+_just)/2.0
