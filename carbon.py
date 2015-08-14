@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.08.3'
+vsn = '2015.08.08.4'
 
 
 
@@ -123,8 +123,8 @@ class Iron:
         nn2 = nn-myth*uu
         uu = zz(1,0,7, 1,q=-2)*myth-1*zz(1,0,7,-1,q=-2)
         nn = zz(1,0,7,-1,q=-2)*myth-1*zz(1,0,7, 1,q=-2)
-        uu,uuu = uu2,uu
-        nn,nnn = nn2,nn
+        uu,uuu = uu2,uu*myth
+        nn,nnn = nn2,nn*myth
         uuu=min(uuu, 100*(1+myth))#*2.0
         nnn=max(nnn,-100*(1+myth))#*2.0
         if uuu<100*myth:
