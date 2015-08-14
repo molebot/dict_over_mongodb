@@ -393,6 +393,7 @@ def doreal(types,symbol,price,vol):
                     cache['closeit'] = 0
                     cache['result']['close'] = price
         rs = '{"symbol":"%s","result":"%d"}'%(symbol,result['result']*cache.get('doit',0)*cache.get('closeit',1))
+        logger.error('%.4f'%(time.time()-tt))
         cache['cache'] = rs
         return rs
     else:
