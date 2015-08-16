@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.08.5'
+vsn = '2015.08.17.e'
 
 
 
@@ -108,46 +108,52 @@ class Iron:
         _just = zz(3,0,7,0)+kmm(1)*kw(3,pp=-2)/(myth*200)
 #        _back = rr(3,0,7,0)+kmmb(1)*kwb(3,pp=-2)/(myth*200)
 
-        _max = zz(3,0,7, 1,q=-2)
-        _min = zz(3,0,7,-1,q=-2)
+        _max = max([zz(3,0,xx, 1,q=-1) for xx in [3,4,5,6,7]])
+        _min = min([zz(3,0,xx,-1,q=-1) for xx in [3,4,5,6,7]])
 
         uuu = -1*zz(3,0,7,-1,q=-1)
         nnn = -1*zz(3,0,7, 1,q=-1)
+        puu = -1*_min
+        pnn = -1*_max
+
+        puk = min(1.0,abs(max(0,puu))/abs(pnn))
+        pnk = min(1.0,abs(min(0,pnn))/abs(puu))
 
         uk = min(1.0,abs(max(0,uuu))/abs(nnn))
         nk = min(1.0,abs(min(0,nnn))/abs(uuu))
 
         uu = -1*uk*zz(1,0,7,-1,q=-2)
         nn = -1*nk*zz(1,0,7, 1,q=-2)
+        pu = -1*puk*zz(1,0,7,-1,q=-2)
+        pn = -1*pnk*zz(1,0,7, 1,q=-2)
         uu2 = uu-myth*nn
         nn2 = nn-myth*uu
-        uu = zz(1,0,7, 1,q=-2)*myth-1*zz(1,0,7,-1,q=-2)
-        nn = zz(1,0,7,-1,q=-2)*myth-1*zz(1,0,7, 1,q=-2)
-        uu,uuu = uu2,uu
-        nn,nnn = nn2,nn
+        puu2 = pu-myth*pn
+        pnn2 = pn-myth*pu
+        uuu = uu2
+        nnn = nn2
+        uuuu = puu2
+        nnnn = pnn2
         uuu=min(uuu, 100*(1+myth))#*2.0
         nnn=max(nnn,-100*(1+myth))#*2.0
         if uuu<100*myth:
             uuu = 100*myth+(100*myth-uuu)
         if nnn>-100*myth:
             nnn = -100*myth-(nnn+100*myth)
-#        uu,uuu = uuu,uu
-#        nn,nnn = nnn,nn
+
         _blue = (_fox+_just)/2.0
         _blue = max(-280,_blue)
         _blue = min( 280,_blue)
-        saved['old'] = []
         ks = max(abs(_max),abs(_min))/max(0.001,_max-_min)
         for i in self.todo:
             c[i][0]['vsn'] = vsn
             c[i][0]['point'] = saved.get('point',c[1][0]['c'])
             c[i][0]['mole'] = _blue
             c[i][0]['just'] = _just# = saved['old'][2][1]
-            c[i][0]['k1'] = kmm(1)
             c[i][0]['uuu'] = uuu
             c[i][0]['nnn'] = nnn
-            c[i][0]['uu'] = uu
-            c[i][0]['nn'] = nn
+            c[i][0]['uu'] = uuuu
+            c[i][0]['nn'] = nnnn
             c[i][0]['fox'] = _blue
             self.cache[i][0] = c[i][0]
             self.save(i,c[i][0])
@@ -171,9 +177,9 @@ class Iron:
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
             if llong*_pass>0:# DON'T CHANGE HERE
-                if (blast>uuu) and blast>_just and zz(1,0,3, 1,q=-1)>zz(1,1,3, 1,q=-1):
+                if (blast>uuu) and blast>_just and zz(1,0,3,-1,q=-1)>zz(1,1,3,-1,q=-1):
                     saved['short'] = short = 1
-                if (blast<nnn) and blast<_just and zz(1,0,3,-1,q=-1)<zz(1,1,3,-1,q=-1):
+                if (blast<nnn) and blast<_just and zz(1,0,3, 1,q=-1)<zz(1,1,3, 1,q=-1):
                     saved['short'] = short = -1
             else:
                 if _pass*llong<0:

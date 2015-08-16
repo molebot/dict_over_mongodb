@@ -134,6 +134,11 @@ def passok(s):
     thread.start_new_thread(cffdata,(1,2))
     return 'ok'
 
+@route('/:s/plus/')
+def passokpp(s):
+    cache['doit'] = int(s)
+    redirect('/w/')
+
 @route('/kaiguan')
 def kaiguan():
     if cache.get('doit',0)==0:
@@ -159,17 +164,51 @@ def index21():
         now = datetime.datetime.now()+datetime.timedelta(days=15)
         timestr = now.strftime('%y%m')
         htm = u'''<!DOCTYPE html>
-    <html><head><META HTTP-EQUIV="REFRESH" CONTENT="10"><title>%s</title></head><body>%s
+    <html><head><META HTTP-EQUIV="REFRESH" CONTENT="10"><title>%s</title></head><body><h2>开关：<a href="/kaiguan">-= %d =-</a> 0:停止交易 1:启动交易</h2>
 <table><tr>
    <td>%s</td>
-   <td><h1>%s<br/>%s</h1><br/><br/><br/><h2>开关：<a href="/kaiguan">-= %d =-</a> <br/>0:停止交易 1:启动交易</h2></td>
+   <td><h1>%s<br/>%s</h1><br/><br/><br/></td>
 </tr></table>
 IF%s<br/>
 ver:%s
     </body></html>
     '''
         pp = Iron('cff2if')
-        rs = htm%(str(datetime.datetime.now()),str(cache.get('result',{})),pp.get_image('3','80','see'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
+        rs = htm%(str(datetime.datetime.now()),doit,pp.get_image('3','80','see'),pss,'<h1>%s</h1>'%vol,timestr,str(vsn))
+        cache['rs'] = rs
+        return rs
+
+@route('/w/')
+def index21e():
+    logten()
+    if 1>0:
+        ps = cache.get('result',{}).get('result',0)*cache.get('closeit',1)
+        p = cache.get('point','00000.0')
+        vol = cache.get('vol','0.0')
+        if ps>0:
+            pss = '<font color="red">%.2f</font>'%float(p)
+        elif ps<0:
+            pss = '<font color="green">%.2f</font>'%float(p)
+        else:
+            pss = '<font color="gray">%.2f</font>'%float(p)
+        doit = cache.get('doit',0)
+        now = datetime.datetime.now()+datetime.timedelta(days=15)
+        timestr = now.strftime('%y%m')
+        htm = u'''<!DOCTYPE html>
+    <html><head><META HTTP-EQUIV="REFRESH" CONTENT="10"><title>%s</title></head><body><h2>开关：%s 0:停止交易 1~n:启动交易手数</h2>
+<table><tr>
+   <td>%s</td>
+   <td><h1>%s<br/>%s</h1><br/><br/><br/></td>
+</tr></table>
+IF%s<br/>
+ver:%s
+    </body></html>
+    '''
+        pp = Iron('cff2if')
+        onoff = ['''<a href="/%d/plus/">-= %d =-</a>'''%(xx,xx) for xx in range(3)]
+        onoffnow = '''-= %d =-'''%doit
+        oostr = onoffnow++"["+','.join(onoff)+"]"
+        rs = htm%(str(datetime.datetime.now()),oostr,pp.get_image('3','80','see'),pss,'<h1>%s</h1>'%vol,timestr,str(vsn))
         cache['rs'] = rs
         return rs
 
