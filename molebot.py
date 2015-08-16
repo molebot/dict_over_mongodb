@@ -205,9 +205,9 @@ ver:%s
     </body></html>
     '''
         pp = Iron('cff2if')
-        onoff = ['''<a href="/%d/plus/">-= %d =-</a>'''%(xx,xx) for xx in range(3)]
+        onoff = ['''<a href="/%d/plus/"># %d #</a>'''%(xx,xx) for xx in range(3)]
         onoffnow = '''-= %d =-'''%doit
-        oostr = onoffnow+"["+','.join(onoff)+"]"
+        oostr = onoffnow+" [ "+','.join(onoff)+" ] "
         rs = htm%(str(datetime.datetime.now()),oostr,pp.get_image('3','80','see'),pss,'<h1>%s</h1>'%vol,timestr,str(vsn))
         cache['rs'] = rs
         return rs
