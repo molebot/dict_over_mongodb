@@ -17,7 +17,7 @@ import thread
 import requests
 
 def mathlog(a):return mathclog(a).real
-#20150817
+#20150817aaa
 def cffdata(a,b):
     _day = datetime.datetime.now()
     _time = _day.hour*60+_day.minute
@@ -136,7 +136,7 @@ def passok(s):
 
 @route('/:s/plus/')
 def passokpp(s):
-    cache['doit'] = int(s)
+    cache['doit'] = min(2,int(s))
     redirect('/w/')
 
 @route('/kaiguan')
