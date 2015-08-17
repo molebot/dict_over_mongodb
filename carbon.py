@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.17.min'
+vsn = '2015.08.17.min-1'
 
 
 
@@ -101,39 +101,42 @@ class Iron:
             nc = max(0,uu[0]-min(nn))
             cc = min(uc,nc)
             return max(0.001,uu[0]-nn[0])/max(0.001,cc)
-        ppp = abs(kmm(1))
+        a = 1
+        b = 3
+        ppp = abs(kmm(a))
         pk = (ppp/(100*myth))**(1+myth)
-        pss = pk*(kmm(1)-zz(1,0,7,0))+zz(1,0,7,0)
-        _fox = zz(3,0,7,0)+pss*kw(3,pp=-2)/(myth*200)
-        _just = zz(3,0,7,0)+kmm(1)*kw(3,pp=-2)/(myth*200)
-#        _back = rr(3,0,7,0)+kmmb(1)*kwb(3,pp=-2)/(myth*200)
+        pss = pk*(kmm(a)-zz(a,0,7,0))+zz(a,0,7,0)
+        _fox = zz(b,0,7,0)+pss*kw(b,pp=-2)/(myth*200)
+        _just = zz(b,0,7,0)+kmm(a)*kw(b,pp=-2)/(myth*200)
 
-        _max = max([zz(3,0,xx, 1,q=-1) for xx in [3,4,5,6,7]])
-        _min = min([zz(3,0,xx,-1,q=-1) for xx in [3,4,5,6,7]])
+        ppp0 = abs(kmm(a-1))
+        pk0 = (ppp0/(100*myth))**(1+myth)
+        pss0 = pk0*(kmm(a-1)-zz(a-1,0,7,0))+zz(a-1,0,7,0)
+        _fox0 = zz(b-1,0,7,0)+pss0*kw(b-1,pp=-2)/(myth*200)
+        _just0 = zz(b-1,0,7,0)+kmm(a-1)*kw(b-1,pp=-2)/(myth*200)
 
-        uuu = -1*zz(3,0,7,-1,q=-1)
-        nnn = -1*zz(3,0,7, 1,q=-1)
-        puu = -1*_min
-        pnn = -1*_max
-
-        puk = min(1.0,abs(max(0,puu))/abs(pnn))
-        pnk = min(1.0,abs(min(0,pnn))/abs(puu))
-
+        uuu = -1*zz(b,0,7,-1,q=-1)
+        nnn = -1*zz(b,0,7, 1,q=-1)
         uk = min(1.0,abs(max(0,uuu))/abs(nnn))
         nk = min(1.0,abs(min(0,nnn))/abs(uuu))
-
-        uu = -1*uk*zz(1,0,7,-1,q=-2)
-        nn = -1*nk*zz(1,0,7, 1,q=-2)
-        pu = -1*puk*zz(1,0,7,-1,q=-2)
-        pn = -1*pnk*zz(1,0,7, 1,q=-2)
+        uu = -1*uk*zz(a,0,7,-1,q=-2)
+        nn = -1*nk*zz(a,0,7, 1,q=-2)
         uu2 = uu-myth*nn
         nn2 = nn-myth*uu
-        puu2 = pu-myth*pn
-        pnn2 = pn-myth*pu
         uuu = uu2
         nnn = nn2
-        uuuu = -1*zz(1,0,7,-1,q=-2)
-        nnnn = -1*zz(1,0,7, 1,q=-2)
+
+        uuu0 = -1*zz(b-1,0,7,-1,q=-1)
+        nnn0 = -1*zz(b-1,0,7, 1,q=-1)
+        uk0 = min(1.0,abs(max(0,uuu0))/abs(nnn0))
+        nk0 = min(1.0,abs(min(0,nnn0))/abs(uuu0))
+        uu0 = -1*uk0*zz(a-1,0,7,-1,q=-2)
+        nn0 = -1*nk0*zz(a-1,0,7, 1,q=-2)
+        uu20 = uu0-myth*nn0
+        nn20 = nn0-myth*uu0
+        uuuu = uu20
+        nnnn = nn20
+
         uuu=min(uuu, 100*(1+myth))#*2.0
         nnn=max(nnn,-100*(1+myth))#*2.0
         if uuu<100*myth:
@@ -142,6 +145,7 @@ class Iron:
             nnn = -100*myth-(nnn+100*myth)
 
         _blue = (_fox+_just)/2.0
+        _blue0 = (_fox0+_just0)/2.0
         _blue = max(-280,_blue)
         _blue = min( 280,_blue)
         ks = max(abs(_max),abs(_min))/max(0.001,_max-_min)
@@ -149,7 +153,7 @@ class Iron:
             c[i][0]['vsn'] = vsn
             c[i][0]['point'] = saved.get('point',c[1][0]['c'])
             c[i][0]['mole'] = _blue
-            c[i][0]['just'] = _just# = saved['old'][2][1]
+            c[i][0]['just'] = _blue0# = saved['old'][2][1]
             c[i][0]['uuu'] = uuu
             c[i][0]['nnn'] = nnn
             c[i][0]['uu'] = uuuu
@@ -170,16 +174,16 @@ class Iron:
 
 
 
-        _pos_ = 1
+        _pos_ = a
         _pass = (_blue-(uuu+nnn)/2.0)
         blast = _blue
         _just = 0
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
             if llong*_pass>0:# DON'T CHANGE HERE
-                if (blast>uuu) and zz(1,0,3,-1,q=-1)>zz(1,1,3,-1,q=-1):
+                if (blast>uuu) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
                     saved['short'] = short = 1
-                if (blast<nnn) and zz(1,0,3, 1,q=-1)<zz(1,1,3, 1,q=-1):
+                if (blast<nnn) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
                     saved['short'] = short = -1
             else:
                 if _pass*llong<0:
@@ -188,9 +192,9 @@ class Iron:
                     if blast<nnn:
                         saved['short'] = short = -1
         elif c[_pos_][0].get('doit',0)==0:
-            if short>0 and (blast<=uuu) and zz(1,0,3,-1,q=-1)<zz(1,1,3,-1,q=-1):
+            if short>0 and (blast<=uuu) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
                 saved['short'] = short = 0
-            if short<0 and (blast>=nnn) and zz(1,0,3, 1,q=-1)>zz(1,1,3, 1,q=-1):
+            if short<0 and (blast>=nnn) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
                 saved['short'] = short = 0
 
         if short!=0 and short!=llong:
@@ -281,7 +285,7 @@ class Iron:
         self.db = {}
         self.data={}
         self.symbol = symbol#+plus
-        self.todo = [1,3]
+        self.todo = [0,1,2,3]
         for i in self.todo:self.db[i] = conn[symbol][str(i)]
         self.out = {}
         _a = allstate[self.symbol]
@@ -290,7 +294,7 @@ class Iron:
         else:
             self.state = {}
         self.cache = {}
-        self.offset = 0#1
+        self.offset = 1
         self.hour = datetime.datetime.now().hour
     def all_result(self):
         allstate[self.symbol] = self.state
@@ -424,7 +428,7 @@ class Iron:
     def save(self,Pos,Dict):
         self.db[Pos].save(Dict)
     def check_len(self,pos):
-        _time = time.time()-pos*2*24*3600
+        _time = time.time()-(1+pos)*2*24*3600
         self.db[pos].remove({'time':{'$lt':_time}})
 #=====================================================================
     def get_image(self,pos,lens,group,offset=0):
