@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.17.free'
+vsn = '2015.08.17.min'
 
 
 
@@ -290,7 +290,7 @@ class Iron:
         else:
             self.state = {}
         self.cache = {}
-        self.offset = 1
+        self.offset = 0#1
         self.hour = datetime.datetime.now().hour
     def all_result(self):
         allstate[self.symbol] = self.state
