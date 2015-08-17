@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.17.ep'
+vsn = '2015.08.17.epc'
 
 
 
@@ -177,9 +177,9 @@ class Iron:
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
             if llong*_pass>0:# DON'T CHANGE HERE
-                if (blast>uuu) and blast>_just and zz(1,0,3,-1,q=-1)>zz(1,1,3,-1,q=-1):
+                if (blast>uuu):# and blast>_just and zz(1,0,3,-1,q=-1)>zz(1,1,3,-1,q=-1):
                     saved['short'] = short = 1
-                if (blast<nnn) and blast<_just and zz(1,0,3, 1,q=-1)<zz(1,1,3, 1,q=-1):
+                if (blast<nnn):# and blast<_just and zz(1,0,3, 1,q=-1)<zz(1,1,3, 1,q=-1):
                     saved['short'] = short = -1
             else:
                 if _pass*llong<0:
@@ -188,9 +188,9 @@ class Iron:
                     if blast<nnn:
                         saved['short'] = short = -1
         elif c[_pos_][0].get('doit',0)==0:
-            if short>0 and (blast<=uuu or blast<_just) and zz(1,0,3,-1,q=-1)<zz(1,1,3,-1,q=-1):
+            if short>0 and (blast<=uuu):# and zz(1,0,3,-1,q=-1)<zz(1,1,3,-1,q=-1):
                 saved['short'] = short = 0
-            if short<0 and (blast>=nnn or blast>_just) and zz(1,0,3, 1,q=-1)>zz(1,1,3, 1,q=-1):
+            if short<0 and (blast>=nnn):# and zz(1,0,3, 1,q=-1)>zz(1,1,3, 1,q=-1):
                 saved['short'] = short = 0
 
         if short!=0 and short!=llong:
