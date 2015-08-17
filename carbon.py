@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.17.e'
+vsn = '2015.08.17.ep'
 
 
 
@@ -326,7 +326,7 @@ class Iron:
             high = now['h']
             now['h'] = now['o']+length
             now['c'] = now['o']+length
-            new = {'o':now['c'],'h':high,'l':now['c'],'c':now['c'],'do':0,'hour':self.hour}
+            new = {'o':now['c'],'h':high,'l':now['c'],'c':now['c'],'do':0,'hour':self.hour,'point':now.get('point',0)}
 
             new['cnt'] = now.get('cnt',0)+1
             new['_id'] = now['_id']+1
@@ -337,7 +337,7 @@ class Iron:
             low = now['l']
             now['l'] = now['o']-length
             now['c'] = now['o']-length
-            new = {'o':now['c'],'h':now['c'],'l':low,'c':now['c'],'do':0,'hour':self.hour}
+            new = {'o':now['c'],'h':now['c'],'l':low,'c':now['c'],'do':0,'hour':self.hour,'point':now.get('point',0)}
 
             new['cnt'] = now.get('cnt',0)+1
             new['_id'] = now['_id']+1
@@ -349,7 +349,7 @@ class Iron:
     def check_k_hour(self,now,last,pos):
         if now.get('hour',-1)!=self.hour:
             p = now['c']
-            new = {'o':p,'h':p,'l':p,'c':p,'do':0,'hour':self.hour}
+            new = {'o':p,'h':p,'l':p,'c':p,'do':0,'hour':self.hour,'point':now.get('point',0)}
             new['_id'] = int(time.time()/3600)*1000000
             new['cnt'] = 0
             self.check_len(pos)
