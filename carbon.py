@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.17.min-1'
+vsn = '2015.08.17.add'
 
 
 
@@ -126,17 +126,6 @@ class Iron:
         uuu = uu2
         nnn = nn2
 
-        uuu0 = -1*zz(b-1,0,7,-1,q=-1)
-        nnn0 = -1*zz(b-1,0,7, 1,q=-1)
-        uk0 = min(1.0,abs(max(0,uuu0))/abs(nnn0))
-        nk0 = min(1.0,abs(min(0,nnn0))/abs(uuu0))
-        uu0 = -1*uk0*zz(a-1,0,7,-1,q=-2)
-        nn0 = -1*nk0*zz(a-1,0,7, 1,q=-2)
-        uu20 = uu0-myth*nn0
-        nn20 = nn0-myth*uu0
-        uuuu = uu20
-        nnnn = nn20
-
         uuu=min(uuu, 100*(1+myth))#*2.0
         nnn=max(nnn,-100*(1+myth))#*2.0
         if uuu<100*myth:
@@ -148,7 +137,8 @@ class Iron:
         _blue0 = (_fox0+_just0)/2.0
         _blue = max(-280,_blue)
         _blue = min( 280,_blue)
-        ks = max(abs(_max),abs(_min))/max(0.001,_max-_min)
+        uuuu = (_blue+uuu)/2.0
+        nnnn = (_blue+nnn)/2.0
         for i in self.todo:
             c[i][0]['vsn'] = vsn
             c[i][0]['point'] = saved.get('point',c[1][0]['c'])
@@ -370,6 +360,7 @@ class Iron:
             _todo['old'] = _last
         _flow = [
         ('m','s','hr',getprice),
+#        ('pm','ps','hp',pmm),
         ('zm','zs','hz',zmm),
         ('xm','xs','hx',dmm),
         ]
@@ -387,7 +378,7 @@ class Iron:
                     _todo[ss][_str_] = st(vle,[one for one in _list[:i]],i)
                     _todo[mm][_str_] = vle
         else:
-            for m,s,h,func in _flow:
+            for mm,ss,hh,func in _flow:
                 if hh not in _todo:
                     _todo[hh] = []
                 _prcs = func(_todo)
