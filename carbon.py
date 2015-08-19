@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.17.add'
+vsn = '2015.08.19.big'
 
 
 
@@ -137,8 +137,21 @@ class Iron:
         _blue0 = (_fox0+_just0)/2.0
         _blue = max(-280,_blue)
         _blue = min( 280,_blue)
+        _blue = (_blue+_blue0)/2.0
         uuuu = (_blue+uuu)/2.0
         nnnn = (_blue+nnn)/2.0
+        if _blue>(uuuu+nnnn)/2.0:
+            _blue = (_blue+uuuu)/2.0
+            if (1+myth)*100>uuu:
+                _blue += ((1+myth)*100-uuu)/2.0
+        else:
+            _blue = (_blue+nnnn)/2.0
+            if -100*(1+myth)<nnn:
+                _blue -= (nnn-100*(1+myth))/2.0
+
+        uuu =  100*(1+myth)
+        nnn = -100*(1+myth)
+
         for i in self.todo:
             c[i][0]['vsn'] = vsn
             c[i][0]['point'] = saved.get('point',c[1][0]['c'])
@@ -164,7 +177,7 @@ class Iron:
 
 
 
-        _pos_ = a
+        _pos_ = a = 0
         _pass = (_blue-(uuu+nnn)/2.0)
         blast = _blue
         _just = 0
@@ -177,9 +190,9 @@ class Iron:
                     saved['short'] = short = -1
             else:
                 if _pass*llong<0:
-                    if blast>uuu:
+                    if blast>uuu or _old>uuu:
                         saved['short'] = short = 1
-                    if blast<nnn:
+                    if blast<nnn or _old<nnn:
                         saved['short'] = short = -1
         elif c[_pos_][0].get('doit',0)==0:
             if short>0 and (blast<=uuu) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
