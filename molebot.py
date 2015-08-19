@@ -136,6 +136,7 @@ def passok(s):
 
 @route('/:s/plus/')
 def passokpp(s):
+    thread.start_new_thread(alertmail,('%s_onoff_%s'%(acc.account,s),))
     cache['doit'] = min(2,int(s))
     redirect('/w/')
 
@@ -145,6 +146,7 @@ def kaiguan():
         cache['doit'] = 1
     else:
         cache['doit'] = 0
+    thread.start_new_thread(alertmail,('%s_onoff_%d'%(acc.account,cache['doit']),))
     redirect('/')
 
 @route('/')
