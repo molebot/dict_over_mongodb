@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.19.big2'
+vsn = '2015.08.19.big22'
 
 
 
@@ -140,7 +140,7 @@ class Iron:
         _blue = (_blue+_blue0)/2.0
         uuuu = (_blue+uuu)/2.0
         nnnn = (_blue+nnn)/2.0
-        if _blue>(uuuu+nnnn)/2.0:
+        if _blue>0:
             _blue = (_blue+uuuu)/2.0
             if (1+myth)*100>uuu:
                 _blue += ((1+myth)*100-uuu)/2.0
