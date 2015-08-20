@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.19.big+'
+vsn = '2015.08.20'
 
 
 
@@ -26,7 +26,7 @@ fill_state={}
 all_state={}
 cache['weeks'] = {}
 class Iron:
-    def get_result(self):
+    def get_result(self,passit=True):
         out = {}
         c = self.cache
         saved = self.state
@@ -151,8 +151,15 @@ class Iron:
 
         _blue,_blue0 = _blue0,_blue
 
-        uuu =  100*(1+myth)
-        nnn = -100*(1+myth)
+        ruu =  uuuu+(uuuu-nnnn)*myth
+        rnn =  nnnn-(uuuu-nnnn)*myth
+
+        if (uuu+uuuu)/2.0>100*(1+myth) or (nnn+nnnn)/2.0<-100*(1+myth):
+            uuu = uuuu
+            nnn = nnnn
+        else:
+            uuu = self.last[3].get('ruu',uuu)
+            nnn = self.last[3].get('rnn',nnn)
 
         for i in self.todo:
             c[i][0]['vsn'] = vsn
@@ -161,12 +168,14 @@ class Iron:
             c[i][0]['just'] = _blue0# = saved['old'][2][1]
             c[i][0]['uuu'] = uuu
             c[i][0]['nnn'] = nnn
+            c[i][0]['ruu'] = ruu
+            c[i][0]['rnn'] = rnn
             c[i][0]['uu'] = uuuu
             c[i][0]['nn'] = nnnn
             c[i][0]['fox'] = _blue
             self.cache[i][0] = c[i][0]
             self.save(i,c[i][0])
-
+        if not passit:return 0
         short = saved.get('short',0)
         llong = saved.get('long',1)
         dead = saved.get('dead',0)
@@ -290,7 +299,7 @@ class Iron:
         self.db = {}
         self.data={}
         self.symbol = symbol#+plus
-        self.todo = [0,1,2,3]
+        self.todo = [3,2,0,1]
         for i in self.todo:self.db[i] = conn[symbol][str(i)]
         self.out = {}
         _a = allstate[self.symbol]
@@ -308,7 +317,8 @@ class Iron:
         for i in self.todo:
             self.new_price(price,i)
     def new_price(self,price,pos):
-        _result = list(self.db[pos].find({'do':1},sort=[('_id',desc)],limit=2))
+        _result = list(self.db[pos].find({'do':1},sort=[('_id',desc)],limit=3))
+        self.last = _result
         length = fibo[pos+self.offset]
         if len(_result)>0:
             now = _result[0]
@@ -341,6 +351,7 @@ class Iron:
             new['_id'] = now['_id']+1
 
             now = self.check_base(pos,now,last)
+            self.last = [now]+self.last[:3]
             return self.check_k_len(new,length,now,pos)
         elif now['o']-now['l']>length:
             low = now['l']
@@ -352,6 +363,7 @@ class Iron:
             new['_id'] = now['_id']+1
 
             now = self.check_base(pos,now,last)
+            self.last = [now]+self.last[:3]
             return self.check_k_len(new,length,now,pos)
         else:
             return (now,last)
@@ -363,6 +375,7 @@ class Iron:
             new['cnt'] = 0
             self.check_len(pos)
             now = self.check_base(pos,now,last)
+            self.last = [now]+self.last[:3]
             saved = self.state
             _p = saved.get('base_p',0)#-saved.get('daybase',0)
             thread.start_new_thread(alertmail,('%s_%.1f_%.1f'%(acc.account,self.money,_p),))
@@ -414,6 +427,8 @@ class Iron:
         else:
             self.cache[pos] = [_todo]
         self.save(pos,_todo)
+        if pos==1:
+            self.get_result(False)
         return _todo
     def data_out(self,pos):
         _result = self.db[pos].find({'do':1},sort=[('_id',desc)],limit=2)
