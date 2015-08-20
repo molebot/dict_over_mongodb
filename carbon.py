@@ -10,9 +10,10 @@ import requests
 import acc
 
 
-vsn = '2015.08.20.grey'
+vsn = '2015.08.20.grey.iron'
 
-
+def save_to_db(_db,_dict):
+    _db.save(_dict)
 
 def filelog(symbol,i,j,o):
     p = dict2str(o)
@@ -20,12 +21,148 @@ def filelog(symbol,i,j,o):
 
 def getprice(one):
     return (one['h']+one['l'])/2.0
-cache['hh'] = {}
 
-fill_state={}
-all_state={}
-cache['weeks'] = {}
 class Iron:
+#=====================================================================
+    def __init__(self,symbol):
+        self.db = {}
+        self.symbol = symbol
+        self.todo = [3,2,0,1]
+        self.out = {}
+        self.cache = {}
+        self.result = {}
+        self.offset = 1
+        for i in self.todo:
+            self.db[i] = conn[symbol][str(i)]
+            _result = list(self.db[i].find({'do':1},sort=[('_id',desc)],limit=5))
+            self.cache[i] = _result
+        _a = allstate[self.symbol]
+        if _a:
+            self.state = _a[0]
+        else:
+            self.state = {}
+#=====================================================================
+    def price(self,price):
+        self.hour = datetime.datetime.now().hour
+        for i in self.todo:
+            self.new_price(price,i)
+#=====================================================================
+    def new_price(self,price,pos):
+        length = fibo[pos+self.offset]
+        _result = self.cache[pos]
+        if len(_result)>0:
+            now = _result[0]
+            if len(_result)>1:
+                last = _result[1]
+            else:
+                last = None
+            now['c'] = price
+            now['h'] = max(now['c'],now['h'])
+            now['l'] = min(now['c'],now['l'])
+            now['time'] = time.time()
+            now['do'] = 0
+            now,last = self.check_k_len(now,length,last,pos)
+            now,last = self.check_k_hour(now,last,pos)
+            now = self.check_base(pos,now,last)
+        else:
+            last = None
+            now = {'_id':0,'do':0,'o':price,'h':price,'l':price,'c':price,'hour':self.hour}
+            now = self.check_base(pos,now,last)
+#=====================================================================
+    def check_k_len(self,now,length,last,pos):
+        if now['h']-now['o']>length:
+            high = now['h']
+            now['h'] = now['o']+length
+            now['c'] = now['o']+length
+            new = {'o':now['c'],'h':high,'l':now['c'],'c':now['c'],'do':0,'hour':self.hour,'point':now.get('point',0)}
+
+            new['cnt'] = now.get('cnt',0)+1
+            new['_id'] = now['_id']+1
+
+            now = self.check_base(pos,now,last)
+            return self.check_k_len(new,length,now,pos)
+        elif now['o']-now['l']>length:
+            low = now['l']
+            now['l'] = now['o']-length
+            now['c'] = now['o']-length
+            new = {'o':now['c'],'h':now['c'],'l':low,'c':now['c'],'do':0,'hour':self.hour,'point':now.get('point',0)}
+
+            new['cnt'] = now.get('cnt',0)+1
+            new['_id'] = now['_id']+1
+
+            now = self.check_base(pos,now,last)
+            return self.check_k_len(new,length,now,pos)
+        else:
+            return (now,last)
+    def check_k_hour(self,now,last,pos):
+        if now.get('hour',-1)!=self.hour:
+            p = now['c']
+            new = {'o':p,'h':p,'l':p,'c':p,'do':0,'hour':self.hour,'point':now.get('point',0)}
+            new['_id'] = int(time.time()/3600)*1000000
+            new['cnt'] = 0
+            self.check_len(pos)
+            now = self.check_base(pos,now,last)
+            saved = self.state
+            _p = saved.get('base_p',0)
+            thread.start_new_thread(alertmail,('%s_%.1f_%.1f'%(acc.account,self.money,_p),))
+            return (new,now)
+        return (now,last)
+#=====================================================================
+    def check_base(self,pos,_todo,_last):
+        if _last and 'old' not in _todo:
+            if 'old' in _last:_last.pop('old')
+            _todo['old'] = _last
+        _flow = [
+        ('m','s','hr',getprice),
+#        ('pm','ps','hp',pmm),
+        ('zm','zs','hz',zmm),
+        ('xm','xs','hx',dmm),
+        ]
+        if _last:
+            for mm,ss,hh,func in _flow:
+                if hh not in _todo:
+                    _todo[hh] = [func(_last)]+_last[hh][:fibo[-1]]
+                _prcs = func(_todo)
+                _list = [_prcs] + _todo[hh]
+                _todo[mm]={}
+                _todo[ss]={}
+                for i in fibo:
+                    _str_ = str(i)
+                    vle = ma(_prcs,_last[mm][_str_],i)
+                    _todo[ss][_str_] = st(vle,[one for one in _list[:i]],i)
+                    _todo[mm][_str_] = vle
+        else:
+            for mm,ss,hh,func in _flow:
+                if hh not in _todo:
+                    _todo[hh] = []
+                _prcs = func(_todo)
+                _list = [_prcs] + _todo[hh]
+                _todo[mm]={}
+                _todo[ss]={}
+                for i in fibo:
+                    _str_ = str(i)
+                    vle = _prcs
+                    _todo[ss][_str_] = 0.0
+                    _todo[mm][_str_] = vle
+#=====================================================================
+        _todo['do']=1
+        _todo['time'] = time.time()
+        self.save(pos,_todo)
+        if pos==1:
+            _todo = self.get_result(passit=pos)
+        return _todo
+#=====================================================================
+    def save(self,Pos,Dict):
+        if Dict['_id']==self.cache[Pos][0]['_id']:
+            self.cache[Pos] = [Dict]+self.cache[Pos][1:]
+        else:
+            self.cache[Pos] = [Dict]+self.cache[Pos][:5]
+        self.db[Pos].save(Dict)
+        thread.start_new_thread(save_to_db,(self.db[Pos],Dict))
+    def check_len(self,pos):
+        _time = time.time()-(1+pos)*2*24*3600
+        self.db[pos].remove({'time':{'$lt':_time}})
+#=====================================================================
     def get_result(self,passit=-1):
         out = {}
         c = self.cache
@@ -148,9 +285,9 @@ class Iron:
             uuu = uuuu
             nnn = nnnn
         else:
-            if len(self.last[1])>3:
-                uuu = self.last[1][3].get('ruu',ruu)
-                nnn = self.last[1][3].get('rnn',rnn)
+            if len(self.cache[1])>3:
+                uuu = self.cache[1][3].get('ruu',ruu)
+                nnn = self.cahce[1][3].get('rnn',rnn)
             else:
                 uuu = ruu
                 nnn = rnn
@@ -159,7 +296,6 @@ class Iron:
         else:
             todo = self.todo
         for i in todo:
-            c[i][0]['vsn'] = vsn
             c[i][0]['point'] = saved.get('point',c[1][0]['c'])
             c[i][0]['mole'] = _blue
             c[i][0]['just'] = _blue0# = saved['old'][2][1]
@@ -246,10 +382,6 @@ class Iron:
                 else:
                     saved['base_p'] = _p+_profit
 
-        if fill<1:
-            if LS2*(c[1][0]['c']-Point)>=10:
-                saved['fill'] = fill = 1
-        #=======================================
         if _day_.hour==15 and _day_.minute>10:
             saved['dead'] = dead = 0
             saved['base_p']=0
@@ -259,13 +391,7 @@ class Iron:
         out['result'] = LS2*dead*closeit
         out['long'] = llong
         out['short'] = short
-#        out['fill'] = fill
-#        out['uuu'] = uuu
-#        out['nnn'] = nnn
-#        out['just'] = _blue
-        out['point'] = saved.get('base_p',0)#-max(saved.get('base_ma',0),saved.get('daybase',0))
-#        out['profit'] = saved.get('base_p',0)
-        #self.state['his']
+
         if self.state.get('ss',0)!=LS2:
             time_str = _day_.strftime('%m.%d.%H:%M:%S')
             self.state['ss']=LS2
@@ -290,147 +416,14 @@ class Iron:
 #=====================================================================
 #=====================================================================
 #=====================================================================
-#=====================================================================
-#=====================================================================
-    def __init__(self,symbol,plus="20150723"):
-        self.db = {}
-        self.data={}
-        self.symbol = symbol#+plus
-        self.todo = [3,2,0,1]
-        for i in self.todo:self.db[i] = conn[symbol][str(i)]
-        self.out = {}
-        self.last = {}
-        _a = allstate[self.symbol]
-        if _a:
-            self.state = _a[0]
-        else:
-            self.state = {}
-        self.cache = {}
-        self.offset = 1
-        self.hour = datetime.datetime.now().hour
     def all_result(self):
         allstate[self.symbol] = self.state
         return {'state':self.state,'result':self.result}
-    def price(self,price):
-        for i in self.todo:
-            self.new_price(price,i)
-    def new_price(self,price,pos):
-        _result = list(self.db[pos].find({'do':1},sort=[('_id',desc)],limit=4))
-        self.last[pos] = _result
-        length = fibo[pos+self.offset]
-        if len(_result)>0:
-            now = _result[0]
-            if len(_result)>1:
-                last = _result[1]
-            else:
-                last = None
-            now['c'] = price
-            now['h'] = max(now['c'],now['h'])
-            now['l'] = min(now['c'],now['l'])
-            now['time'] = time.time()
-            now['do'] = 0
-            now,last = self.check_k_len(now,length,last,pos)
-            now,last = self.check_k_hour(now,last,pos)
-            now = self.check_base(pos,now,last)
-        else:
-            last = None
-            now = {'_id':0,'do':0,'o':price,'h':price,'l':price,'c':price,'hour':self.hour}
-            now = self.check_base(pos,now,last)
     def real(self,p):self.realprice = p
     def money(self,p):self.money = p
-    def check_k_len(self,now,length,last,pos):
-        if now['h']-now['o']>length:
-            high = now['h']
-            now['h'] = now['o']+length
-            now['c'] = now['o']+length
-            new = {'o':now['c'],'h':high,'l':now['c'],'c':now['c'],'do':0,'hour':self.hour,'point':now.get('point',0)}
-
-            new['cnt'] = now.get('cnt',0)+1
-            new['_id'] = now['_id']+1
-
-            now = self.check_base(pos,now,last)
-            self.last[pos] = [now]+self.last[pos][:3]
-            return self.check_k_len(new,length,now,pos)
-        elif now['o']-now['l']>length:
-            low = now['l']
-            now['l'] = now['o']-length
-            now['c'] = now['o']-length
-            new = {'o':now['c'],'h':now['c'],'l':low,'c':now['c'],'do':0,'hour':self.hour,'point':now.get('point',0)}
-
-            new['cnt'] = now.get('cnt',0)+1
-            new['_id'] = now['_id']+1
-
-            now = self.check_base(pos,now,last)
-            self.last[pos] = [now]+self.last[pos][:3]
-            return self.check_k_len(new,length,now,pos)
-        else:
-            return (now,last)
-    def check_k_hour(self,now,last,pos):
-        if now.get('hour',-1)!=self.hour:
-            p = now['c']
-            new = {'o':p,'h':p,'l':p,'c':p,'do':0,'hour':self.hour,'point':now.get('point',0)}
-            new['_id'] = int(time.time()/3600)*1000000
-            new['cnt'] = 0
-            self.check_len(pos)
-            now = self.check_base(pos,now,last)
-            self.last[pos] = [now]+self.last[pos][:3]
-            saved = self.state
-            _p = saved.get('base_p',0)#-saved.get('daybase',0)
-            thread.start_new_thread(alertmail,('%s_%.1f_%.1f'%(acc.account,self.money,_p),))
-            return (new,now)
-        return (now,last)
-
-    def check_base(self,pos,_todo,_last):
-        if _last and 'old' not in _todo:
-            if 'old' in _last:_last.pop('old')
-            _todo['old'] = _last
-        _flow = [
-        ('m','s','hr',getprice),
-#        ('pm','ps','hp',pmm),
-        ('zm','zs','hz',zmm),
-        ('xm','xs','hx',dmm),
-        ]
-        if _last:
-            for mm,ss,hh,func in _flow:
-                if hh not in _todo:
-                    _todo[hh] = [func(_last)]+_last[hh][:fibo[-1]]
-                _prcs = func(_todo)
-                _list = [_prcs] + _todo[hh]
-                _todo[mm]={}
-                _todo[ss]={}
-                for i in fibo:
-                    _str_ = str(i)
-                    vle = ma(_prcs,_last[mm][_str_],i)
-                    _todo[ss][_str_] = st(vle,[one for one in _list[:i]],i)
-                    _todo[mm][_str_] = vle
-        else:
-            for mm,ss,hh,func in _flow:
-                if hh not in _todo:
-                    _todo[hh] = []
-                _prcs = func(_todo)
-                _list = [_prcs] + _todo[hh]
-                _todo[mm]={}
-                _todo[ss]={}
-                for i in fibo:
-                    _str_ = str(i)
-                    vle = _prcs
-                    _todo[ss][_str_] = 0.0
-                    _todo[mm][_str_] = vle
-#=====================================================================
-        _todo['do']=1
-        _todo['time'] = time.time()
-        if _last:
-            self.cache[pos] = [_todo,_last]
-            self.save(pos,_last)
-        else:
-            self.cache[pos] = [_todo]
-        self.save(pos,_todo)
-        if pos==1:
-            _todo = self.get_result(passit=pos)
-        return _todo
     def data_out(self,pos):
-        _result = self.db[pos].find({'do':1},sort=[('_id',desc)],limit=2)
-        return jsondump(list(_result))
+        _result = self.cache[pos][:2]
+        return jsondump(_result)
     def data_in(self):
         for ii in self.todo:
             f = open('/root/local/%d.txt'%ii)
@@ -442,6 +435,8 @@ class Iron:
                 one['_id'] += 100 #int(time.time()/3600)*1000000+_mod
                 self.save(ii,one)
                 print "save ok",ii
+            _result = list(self.db[ii].find({'do':1},sort=[('_id',desc)],limit=5))
+            self.cache[ii] = _result
         return 'ok'
 #=====================================================================
     def save(self,Pos,Dict):

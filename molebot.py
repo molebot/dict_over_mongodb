@@ -6,7 +6,7 @@ from math import e as mathe
 from hashlib import sha1
 import time,sys,datetime,random
 from xml2dict_encoder import XML2Dict as x2d
-from iron import Iron,vsn
+from carbon import Iron,vsn
 from svgcandle import *
 from core import *
 from handlers import MongoHandler
@@ -15,6 +15,8 @@ from settings import mongo_server
 from qqmail import *
 import thread
 import requests
+
+ver = '.out.2015.08.21'
 
 def mathlog(a):return mathclog(a).real
 #20150817aaa
@@ -178,7 +180,7 @@ ver:%s
     </body></html>
     '''
         pp = cache['oc']['cff2if']
-        rs = htm%(str(datetime.datetime.now()),doit,pp.get_image('3','80','see'),pss,'<h1>%s</h1>'%vol,timestr,str(vsn))
+        rs = htm%(str(datetime.datetime.now()),doit,pp.get_image('3','80','see'),pss,'<h1>%s</h1>'%vol,timestr,vsn+ver)
         cache['rs'] = rs
         return rs
 
