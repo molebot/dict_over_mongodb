@@ -190,9 +190,9 @@ class Iron:
                     saved['short'] = short = -1
             else:
                 if _pass*llong<0:
-                    if blast>uuu or _old>uuu:
+                    if blast>uuu:
                         saved['short'] = short = 1
-                    if blast<nnn or _old<nnn:
+                    if blast<nnn:
                         saved['short'] = short = -1
         elif c[_pos_][0].get('doit',0)==0:
             if short>0 and (blast<=uuu) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
