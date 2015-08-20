@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.21.iron'
+vsn = '2015.08.21.iron.1'
 
 def save_to_db(_db,_dict):
     _db.save(_dict)
@@ -47,7 +47,7 @@ class Iron:
         for ii in self.todo:
             out[ii]={}
             for one in self.cache[ii]:
-                out[ii]['key'] = one['_id']
+                out[ii][one['_id']] = 1
         return out
 #=====================================================================
     def price(self,price):
