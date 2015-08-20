@@ -57,6 +57,10 @@ def logten():
                 <span style="color:gray">%s</span>'''%(url,ip,time.time()/10,ip,cache['pass']-time.time(),request.environ.get('HTTP_USER_AGENT','no agent')))
     return True#request.cookies.get('cookie', '0') in cache['cookie']
 
+@route('/status')
+def get_status():
+    return str(cache['oc']['cff2if'].status())
+
 @route('/all/:o')
 def index_show_svg(o):
     logten()

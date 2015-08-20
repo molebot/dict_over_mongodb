@@ -42,6 +42,14 @@ class Iron:
         else:
             self.state = {}
 #=====================================================================
+    def status(self):
+        out={}
+        for ii in self.todo:
+            out[ii]={}
+            for one in self.cache[ii]:
+                out[ii]['key'] = one['_id']
+        return out
+#=====================================================================
     def price(self,price):
         self.hour = datetime.datetime.now().hour
         for i in self.todo:
