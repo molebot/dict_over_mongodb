@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.19.big22'
+vsn = '2015.08.19.big+'
 
 
 
@@ -141,13 +141,15 @@ class Iron:
         uuuu = (_blue+uuu)/2.0
         nnnn = (_blue+nnn)/2.0
         if _blue>0:
-            _blue = (_blue+uuuu)/2.0
+            _blue0 = (_blue+uuuu)/2.0
             if (1+myth)*100>uuu:
-                _blue += ((1+myth)*100-uuu)/2.0
+                _blue0 += ((1+myth)*100-uuu)/2.0
         else:
-            _blue = (_blue+nnnn)/2.0
+            _blue0 = (_blue+nnnn)/2.0
             if -100*(1+myth)<nnn:
-                _blue -= (nnn-100*(1+myth))/2.0
+                _blue0 -= (nnn+100*(1+myth))/2.0
+
+        _blue,_blue0 = _blue0,_blue
 
         uuu =  100*(1+myth)
         nnn = -100*(1+myth)
