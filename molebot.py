@@ -16,7 +16,7 @@ from qqmail import *
 import thread
 import requests
 
-ver = '.out.2015.08.21'
+ver = '.out.2015.08.21.2'
 
 def mathlog(a):return mathclog(a).real
 #20150817aaa
@@ -32,8 +32,6 @@ def cffdata(a,b):
 cache['pass'] = time.time()+7*24*3600
 cache['long']='100'
 cache['_'] = {}
-cache['oc']={}
-cache['oc']['cff2if'] = Iron('cff2if')
 
 def now():return datetime.datetime.now()
 def logten():
@@ -57,10 +55,6 @@ def logten():
                 <span style="color:gray">%s</span>'''%(url,ip,time.time()/10,ip,cache['pass']-time.time(),request.environ.get('HTTP_USER_AGENT','no agent')))
     return True#request.cookies.get('cookie', '0') in cache['cookie']
 
-@route('/status')
-def get_status():
-    return str(cache['oc']['cff2if'].status())
-
 @route('/all/:o')
 def index_show_svg(o):
     logten()
@@ -72,7 +66,7 @@ def index_show_svg(o):
     <html><head><title></title></head><body>
     %s <br/> %s
     </body></html>
-    '''%(cache['oc']['cff2if'].get_image(m,l,n,offset=int(o)),''.join(['''
+    '''%(Iron('cff2if').get_image(m,l,n,offset=int(o)),''.join(['''
         <a href="/all/%d" target="_blank">-%d-</a>
         '''%(i,i) for i in range(15)]))
 
@@ -87,7 +81,7 @@ def index_show_svg(o):
     <html><head><title></title></head><body>
     %s <br/> %s
     </body></html>
-    '''%(cache['oc']['cff2if'].get_image(m,l,n,offset=int(o)),''.join(['''
+    '''%(Iron('cff2if').get_image(m,l,n,offset=int(o)),''.join(['''
         <a href="/all1/%d" target="_blank">-%d-</a>
         '''%(i,i) for i in range(15)]))
 
@@ -102,7 +96,7 @@ def index_show_svg(o):
     <html><head><title></title></head><body>
     %s <br/> %s
     </body></html>
-    '''%(cache['oc']['cff2if'].get_image(m,l,n,offset=int(o)),''.join(['''
+    '''%(Iron('cff2if').get_image(m,l,n,offset=int(o)),''.join(['''
         <a href="/only/%d" target="_blank">-%d-</a>
         '''%(i,i) for i in range(15)]))
 
@@ -183,7 +177,7 @@ IF%s<br/>
 ver:%s
     </body></html>
     '''
-        pp = cache['oc']['cff2if']
+        pp = Iron('cff2if')
         rs = htm%(str(datetime.datetime.now()),doit,pp.get_image('3','80','see'),pss,'<h1>%s</h1>'%vol,timestr,vsn+ver)
         cache['rs'] = rs
         return rs
@@ -214,7 +208,7 @@ IF%s<br/>
 ver:%s
     </body></html>
     '''
-        pp = cache['oc']['cff2if']
+        pp = Iron('cff2if')
         onoff = ['''<a href="/%d/plus/"># %d #</a>'''%(xx,xx) for xx in range(3)]
         onoffnow = '''-= %d =-'''%doit
         oostr = onoffnow+" [ "+','.join(onoff)+" ] "
@@ -248,7 +242,7 @@ IF%s<br/>
 ver:%s
     </body></html>
     '''
-        pp = cache['oc']['cff2if']
+        pp = Iron('cff2if')
         return htm%(str(datetime.datetime.now()),str(cache.get('result',{})),pp.get_image('3','80','see'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
 
 @route('/back/')
@@ -277,7 +271,7 @@ IF%s<br/>
 ver:%s
     </body></html>
     '''
-        pp = cache['oc']['cff2if']
+        pp = Iron('cff2if')
         return htm%(str(datetime.datetime.now()),pp.get_image('3','80','see2'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
 
 @route('/1/')
@@ -306,7 +300,7 @@ IF%s<br/>
 ver:%s
     </body></html>
     '''
-        pp = cache['oc']['cff2if']
+        pp = Iron('cff2if')
         return htm%(str(datetime.datetime.now()),pp.get_image('1','80','see'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
 
 @route('/back/1/')
@@ -335,7 +329,7 @@ IF%s<br/>
 ver:%s
     </body></html>
     '''
-        pp = cache['oc']['cff2if']
+        pp = Iron('cff2if')
         return htm%(str(datetime.datetime.now()),pp.get_image('1','80','see2'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
 
 @route('/log/:a')
@@ -417,16 +411,15 @@ def doreal(types,symbol,price,vol):
         tt = time.time()
         if 'symbol' not in cache:cache['symbol'] = {}
         cache['symbol'][types] = symbol
-        tick = cache['oc']['cff2if']
+        tick = Iron(types)
         tick.real(float(price))
-        tick.money(float(vol))
+        tick.getmoney(float(vol))
         tick.price(mathlog(float(price))*3400.0)
         tick.get_result()
         result = tick.result
         cache['result'] = result
         cache['point'] = price
         cache['vol'] = vol
-        cache['oc']['cff2if'] = tick
         _level = tick.day_level()
         if cache.get('closeit',1)<1 and result['short'] != 0:
             cache['closeit'] = 1
@@ -456,13 +449,12 @@ def apicff(p):#	s symbol b deadline_base o base a account t aceq p price
     if '192.168.' in request['REMOTE_ADDR'] and ( 555<=_time<=690 or 780<=_time<=915 ):
         global cache
         tt = time.time()
-        pp = cache['oc']['cff2if']
+        pp = Iron('cff2if')
         pp.real(float(p))
-        pp.money(float(0.0))
+        pp.getmoney(float(0.0))
         pp.price(mathlog(float(p))*3400.0)  #   delay 15 min
         pp.get_result()
         result = pp.result
-        cache['oc']['cff2if'] = pp
         cache['point'] = p
         cache['result'] = result
         _level = pp.day_level()
