@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.20.grey2'
+vsn = '2015.08.20.grey3'
 
 
 
@@ -149,8 +149,8 @@ class Iron:
             nnn = nnnn
         else:
             _result = list(self.db[1].find({'do':1},sort=[('_id',desc)],limit=4))
-            uuu = _result[3]['ruu']
-            nnn = _result[3]['rnn']
+            uuu = _result[3].get('ruu',ruu)
+            nnn = _result[3].get('rnn',rnn)
         if passit>=0:
             todo = [passit]
         else:
