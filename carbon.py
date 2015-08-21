@@ -144,13 +144,13 @@ class Iron:
         ruu =  uuuu+(uuuu-nnnn)*myth
         rnn =  nnnn-(uuuu-nnnn)*myth
 
-        if (uuu+uuuu)/2.0>100*(1+myth) or (nnn+nnnn)/2.0<-100*(1+myth):
+        if (ruu+uuuu)/2.0>100*(1+myth) or (rnn+nnnn)/2.0<-100*(1+myth):
             uuu = uuuu
             nnn = nnnn
         else:
             _result = list(self.db[1].find({'do':1},sort=[('_id',desc)],limit=4))
-            uuu = _result[3].get('ruu',ruu)
-            nnn = _result[3].get('rnn',rnn)
+            uuu = _result[3]['ruu']
+            nnn = _result[3]['rnn']
         if passit>=0:
             todo = [passit]
         else:
@@ -164,8 +164,8 @@ class Iron:
             c[i][0]['nnn'] = nnn
             c[i][0]['ruu'] = ruu
             c[i][0]['rnn'] = rnn
-            c[i][0]['uu'] = ruu
-            c[i][0]['nn'] = rnn
+            c[i][0]['uu'] = uuuu
+            c[i][0]['nn'] = nnnn
             c[i][0]['fox'] = _blue
             self.cache[i][0] = c[i][0]
             self.save(i,c[i][0])
