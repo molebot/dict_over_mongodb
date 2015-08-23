@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.23.11'
+vsn = '2015.08.23.111'
 
 
 
@@ -279,7 +279,7 @@ class Iron:
         self.data={}
         self.symbol = symbol+plus
         self.todo = [3,2,0,1]
-        for i in self.todo:self.db[i] = conn[symbol][str(i)]
+        for i in self.todo:self.db[i] = conn[self.symbol][str(i)]
         self.out = {}
         self.last = {}
         _a = allstate[self.symbol]
