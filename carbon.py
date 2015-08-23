@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.23.1'
+vsn = '2015.08.23.11'
 
 
 
@@ -277,7 +277,7 @@ class Iron:
     def __init__(self,symbol,plus="20150723"):
         self.db = {}
         self.data={}
-        self.symbol = symbol#+plus
+        self.symbol = symbol+plus
         self.todo = [3,2,0,1]
         for i in self.todo:self.db[i] = conn[symbol][str(i)]
         self.out = {}
