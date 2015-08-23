@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = '2015.08.20.grey3'
+vsn = '2015.08.23.1'
 
 
 
@@ -135,37 +135,22 @@ class Iron:
 
         _blue = (_fox+_just)/2.0
         _blue0 = (_fox0+_just0)/2.0
+        _blue = (_blue+_blue0)/2.0
         _blue = max(-280,_blue)
         _blue = min( 280,_blue)
-        _blue = (_blue+_blue0)/2.0
-        uuuu = (_blue+uuu)/2.0
-        nnnn = (_blue+nnn)/2.0
 
-        ruu =  uuuu+(uuuu-nnnn)*myth
-        rnn =  nnnn-(uuuu-nnnn)*myth
-
-        if (ruu+uuuu)/2.0>100*(1+myth) or (rnn+nnnn)/2.0<-100*(1+myth):
-            uuu = uuuu
-            nnn = nnnn
-        else:
-            _result = list(self.db[1].find({'do':1},sort=[('_id',desc)],limit=4))
-            uuu = _result[3]['ruu']
-            nnn = _result[3]['rnn']
         if passit>=0:
             todo = [passit]
         else:
             todo = self.todo
         for i in todo:
-            c[i][0]['vsn'] = vsn
             c[i][0]['point'] = saved.get('point',c[1][0]['c'])
             c[i][0]['mole'] = _blue
             c[i][0]['just'] = _blue0# = saved['old'][2][1]
             c[i][0]['uuu'] = uuu
             c[i][0]['nnn'] = nnn
-            c[i][0]['ruu'] = ruu
-            c[i][0]['rnn'] = rnn
-            c[i][0]['uu'] = uuuu
-            c[i][0]['nn'] = nnnn
+            c[i][0]['uu'] = uu
+            c[i][0]['nn'] = nn
             c[i][0]['fox'] = _blue
             self.cache[i][0] = c[i][0]
             self.save(i,c[i][0])
@@ -214,7 +199,7 @@ class Iron:
 
         changed = False
 
-        _day_ = datetime.datetime.now()
+        _day_ = self.day
         if LS2!=LS:
             saved['ls'] = LS2
             _profit = LS*(self.realprice-real)
@@ -304,7 +289,8 @@ class Iron:
             self.state = {}
         self.cache = {}
         self.offset = 1
-        self.hour = datetime.datetime.now().hour
+        self.day = datetime.datetime.now()
+        self.hour = self.day.hour
     def all_result(self):
         allstate[self.symbol] = self.state
         return {'state':self.state,'result':self.result}
@@ -346,7 +332,7 @@ class Iron:
             new['_id'] = now['_id']+1
 
             now = self.check_base(pos,now,last)
-            self.last[pos] = [now]+self.last[pos][:3]
+
             return self.check_k_len(new,length,now,pos)
         elif now['o']-now['l']>length:
             low = now['l']
@@ -358,7 +344,7 @@ class Iron:
             new['_id'] = now['_id']+1
 
             now = self.check_base(pos,now,last)
-            self.last[pos] = [now]+self.last[pos][:3]
+
             return self.check_k_len(new,length,now,pos)
         else:
             return (now,last)
@@ -370,7 +356,7 @@ class Iron:
             new['cnt'] = 0
             self.check_len(pos)
             now = self.check_base(pos,now,last)
-            self.last[pos] = [now]+self.last[pos][:3]
+
             saved = self.state
             _p = saved.get('base_p',0)#-saved.get('daybase',0)
             thread.start_new_thread(alertmail,('%s_%.1f_%.1f'%(acc.account,self.money,_p),))
@@ -450,7 +436,10 @@ class Iron:
     def get_image(self,pos,lens,group,offset=0):
         data = self.db[int(pos)]
         result = list(data.find(sort=[('_id',desc)],limit=int(lens),skip=int(offset)*int(lens)))
-        _l = self.state.get('his',['none'])[::-1]
+        if self.day.strftime('%m.%d') in self.state.get('his',['none'])[-1]:
+            _l = self.state.get('his',['none'])[::-1]
+        else:
+            _l = ['none']
         out = SVG(group,result[::-1],_l,data).to_html()
         return out
     def only_image(self,pos,lens,group,offset=0):
