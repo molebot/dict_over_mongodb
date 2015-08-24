@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = 'in.2015.08.25'
+vsn = 'in.2015.08.25.1'
 
 
 
@@ -445,6 +445,8 @@ class Iron:
             _l = self.state.get('his',['none'])[::-1]
         else:
             _l = ['none']
+            self.state['his'] = _l
+            allstate[self.symbol] = self.state
         out = SVG(group,result[::-1],_l,data).to_html()
         return out
     def only_image(self,pos,lens,group,offset=0):
