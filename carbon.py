@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = 'in.2015.08.23.1'
+vsn = 'in.2015.08.23.2'
 
 
 
