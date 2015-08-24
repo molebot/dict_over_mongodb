@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = 'in.2015.08.23.134'
+vsn = 'in.2015.08.23.144'
 
 
 
@@ -149,8 +149,8 @@ class Iron:
             c[i][0]['just'] = _blue0# = saved['old'][2][1]
             c[i][0]['uuu'] = uuu
             c[i][0]['nnn'] = nnn
-            c[i][0]['uu'] = uu*0
-            c[i][0]['nn'] = nn*0
+            c[i][0]['uu'] = -1*zz(0,0,7,-1,q=-2)
+            c[i][0]['nn'] = -1*zz(0,0,7, 1,q=-2)
             c[i][0]['fox'] = _blue
             self.cache[i][0] = c[i][0]
             self.save(i,c[i][0])
