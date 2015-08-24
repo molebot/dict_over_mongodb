@@ -143,7 +143,7 @@ class Iron:
 #        _blue = (_blue+_blue0)/2.0
         _blue = max(-280,_blue)
         _blue = min( 280,_blue)
-
+        _blue,_blue0=_blue0,_blue
         if passit>=0:
             todo = [passit]
         else:
