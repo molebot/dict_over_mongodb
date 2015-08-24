@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = 'in.2015.08.23'
+vsn = 'in.2015.08.23.1'
 
 
 
@@ -167,16 +167,16 @@ class Iron:
 
 
 
-        _pos_ = a = 0
+        _pos_ = a = 1
         _pass = (_blue-(uuu+nnn)/2.0)
         blast = _blue
         _just = 0
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
             if llong*_pass>0:# DON'T CHANGE HERE
-                if (blast>uuu) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
+                if (blast>uuu) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
                     saved['short'] = short = 1
-                if (blast<nnn) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
+                if (blast<nnn) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
                     saved['short'] = short = -1
             else:
                 if _pass*llong<0:
