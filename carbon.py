@@ -135,7 +135,7 @@ class Iron:
 
         _blue = (_fox+_just)/2.0
         _blue0 = (_fox0+_just0)/2.0
-        _blue = (_blue+_blue0)/2.0
+#        _blue = (_blue+_blue0)/2.0
         _blue = max(-280,_blue)
         _blue = min( 280,_blue)
 
