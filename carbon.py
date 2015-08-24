@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = 'in.2015.08.23.14'
+vsn = 'in.2015.08.23.134'
 
 
 
@@ -174,15 +174,15 @@ class Iron:
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
             if llong*_pass>0:# DON'T CHANGE HERE
-                if (c[1][0]['just']>c[1][0]['fox'] and c[1][0]['fox']>c[1][1]['fox']) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
+                if (c[1][0]['just']>c[1][0]['fox'] and c[1][0]['fox']>c[1][1]['fox']) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
                     saved['short'] = short = 1
-                if (c[1][0]['just']<c[1][0]['fox'] and c[1][0]['fox']<c[1][1]['fox']) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
+                if (c[1][0]['just']<c[1][0]['fox'] and c[1][0]['fox']<c[1][1]['fox']) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
                     saved['short'] = short = -1
             else:
                 if _pass*llong<0:
-                    if blast>uuu:
+                    if blast>uuu*0:
                         saved['short'] = short = 1
-                    if blast<nnn:
+                    if blast<nnn*0:
                         saved['short'] = short = -1
         elif c[_pos_][0].get('doit',0)==0:
             if short>0 and (c[1][0]['just']<c[1][0]['fox'] and c[1][0]['fox']<c[1][1]['fox']) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
