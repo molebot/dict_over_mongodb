@@ -16,7 +16,7 @@ from qqmail import *
 import thread
 import requests
 
-ver = '.out.2015.08.23'
+ver = '.out.2015.08.24'
 
 def mathlog(a):return mathclog(a).real
 #20150817aaa
@@ -405,7 +405,7 @@ upstate={}
 def doreal(types,symbol,price,vol):
     _day = datetime.datetime.now()
     _time = _day.hour*60+_day.minute
-    if '192.168.' in request['REMOTE_ADDR'] and ( 555<=_time<=690 or 780<=_time<=915 ):
+    if '192.168.' in request['REMOTE_ADDR'] and ( 555<=_time<=690 or 780<=_time<=915 ) and float(price)>0:
         global allstate
         global cache
         tt = time.time()

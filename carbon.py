@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = 'in.2015.08.23.144'
+vsn = 'in.2015.08.23.15'
 
 
 
@@ -132,6 +132,11 @@ class Iron:
             uuu = 100*myth+(100*myth-uuu)
         if nnn>-100*myth:
             nnn = -100*myth-(nnn+100*myth)
+        uu = -1*zz(0,0,7,-1,q=-2)
+        nn = -1*zz(0,0,7, 1,q=-2)
+
+        uuu += uu
+        nnn += nn
 
         _blue = (_fox+_just)/2.0
         _blue0 = (_fox0+_just0)/2.0
@@ -149,8 +154,8 @@ class Iron:
             c[i][0]['just'] = _blue0# = saved['old'][2][1]
             c[i][0]['uuu'] = uuu
             c[i][0]['nnn'] = nnn
-            c[i][0]['uu'] = -1*zz(0,0,7,-1,q=-2)
-            c[i][0]['nn'] = -1*zz(0,0,7, 1,q=-2)
+            c[i][0]['uu'] = uu
+            c[i][0]['nn'] = nn
             c[i][0]['fox'] = _blue
             self.cache[i][0] = c[i][0]
             self.save(i,c[i][0])
@@ -167,27 +172,27 @@ class Iron:
 
 
 
-        _pos_ = a = 1
+        _pos_ = a = 0
         _pass = (_blue-(uuu+nnn)/2.0)
         blast = _blue
         _just = 0
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
             if llong*_pass>0:# DON'T CHANGE HERE
-                if (c[1][0]['just']>c[1][0]['fox'] and c[1][0]['fox']>c[1][1]['fox']) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
+                if (blast>uuu) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
                     saved['short'] = short = 1
-                if (c[1][0]['just']<c[1][0]['fox'] and c[1][0]['fox']<c[1][1]['fox']) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
+                if (blast<nnn) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
                     saved['short'] = short = -1
             else:
                 if _pass*llong<0:
-                    if blast>uuu*0:
+                    if blast>uuu:
                         saved['short'] = short = 1
-                    if blast<nnn*0:
+                    if blast<nnn:
                         saved['short'] = short = -1
         elif c[_pos_][0].get('doit',0)==0:
-            if short>0 and (c[1][0]['just']<c[1][0]['fox'] and c[1][0]['fox']<c[1][1]['fox']) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
+            if short>0 and (blast<uuu) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
                 saved['short'] = short = 0
-            if short<0 and (c[1][0]['just']>c[1][0]['fox'] and c[1][0]['fox']>c[1][1]['fox']) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
+            if short<0 and (blast>nnn) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
                 saved['short'] = short = 0
 
         if short!=0 and short!=llong:
