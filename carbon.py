@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = 'in.2015.08.25.345'
+vsn = 'in.2015.08.25.3456'
 
 
 
@@ -142,12 +142,12 @@ class Iron:
         uuu = _blue0+uu
         nnn = _blue0+nn
 
-        uuu=min(uuu, 100*(1+myth))#*2.0
-        nnn=max(nnn,-100*(1+myth))#*2.0
-        if uuu<100*myth:
-            uuu = 100*myth+(100*myth-uuu)
-        if nnn>-100*myth:
-            nnn = -100*myth-(nnn+100*myth)
+#        uuu=min(uuu, 100*(1+myth))#*2.0
+#        nnn=max(nnn,-100*(1+myth))#*2.0
+#        if uuu<100*myth:
+#            uuu = 100*myth+(100*myth-uuu)
+#        if nnn>-100*myth:
+#            nnn = -100*myth-(nnn+100*myth)
 
         if passit>=0:
             todo = [passit]
