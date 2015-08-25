@@ -16,7 +16,7 @@ from qqmail import *
 import thread
 import requests
 
-ver = '.out.2015.08.24'
+ver = '.out.2015.08.25'
 
 def mathlog(a):return mathclog(a).real
 #20150817aaa
