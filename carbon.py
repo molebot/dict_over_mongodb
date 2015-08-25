@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = 'in.2015.08.25.34567890'
+vsn = 'in.2015.08.25.345678901'
 
 
 
@@ -135,10 +135,10 @@ class Iron:
         
         uu = -1*zz(0,0,7,-1,q=-1)
         nn = -1*zz(0,0,7, 1,q=-1)
-#        if _blue0>100*(1+myth):
-#            _blue0 -= (_blue0-(1+myth)*100)*2.0
-#        elif _blue0<-100*(1+myth):
-#            _blue0 += (-100*(1+myth)-_blue0)*2.0
+        if _blue0>100*(1+myth):
+            _blue0 -= (_blue0-(1+myth)*100)*2.0
+        elif _blue0<-100*(1+myth):
+            _blue0 += (-100*(1+myth)-_blue0)*2.0
         uuu = _blue0+uu
         nnn = _blue0+nn
 
