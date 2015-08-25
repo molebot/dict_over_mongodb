@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = 'in.2015.08.25.345678901'
+vsn = 'in.2015.08.25.3456789012'
 
 
 
@@ -133,8 +133,8 @@ class Iron:
         _blue = min( 280,_blue)
         _blue,_blue0=_blue0,_blue
         
-        uu = -1*zz(0,0,7,-1,q=-1)
-        nn = -1*zz(0,0,7, 1,q=-1)
+        uu = -1*zz(0,0,7,-1,q=-2)
+        nn = -1*zz(0,0,7, 1,q=-2)
         if _blue0>100*(1+myth):
             _blue0 -= (_blue0-(1+myth)*100)*2.0
         elif _blue0<-100*(1+myth):
