@@ -1,4 +1,5 @@
 #coding:utf-8
+ver = '.out.2015.08.25.1'
 from bottle import route,run,debug,request,redirect,response,error,static_file
 import bottle,os,acc
 from cmath import log as mathclog
@@ -16,7 +17,6 @@ from qqmail import *
 import thread
 import requests
 
-ver = '.out.2015.08.25'
 
 def mathlog(a):return mathclog(a).real
 #20150817aaa
@@ -397,7 +397,7 @@ def filein(filename):
         f = open('/root/local/%s.py'%filename,'w')
         f.writelines(cc.content)
         f.close()
-        return '%s,%d'%(filename,len(cc.content[0]))
+        return '%s,%d'%(filename,len(cc.content[:10]))
     return 'error'
 
 upstate={}
