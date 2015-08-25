@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = 'in.2015.08.25.1'
+vsn = 'in.2015.08.25.2'
 
 
 
@@ -126,24 +126,26 @@ class Iron:
         uuu = uu2
         nnn = nn2
 
-        uuu=min(uuu, 100*(1+myth))#*2.0
-        nnn=max(nnn,-100*(1+myth))#*2.0
-        if uuu<100*myth:
-            uuu = 100*myth+(100*myth-uuu)
-        if nnn>-100*myth:
-            nnn = -100*myth-(nnn+100*myth)
-        uu = -1*zz(0,0,7,-1,q=-2)
-        nn = -1*zz(0,0,7, 1,q=-2)
-
-        uuu += uu
-        nnn += nn
-
         _blue = (_fox+_just)/2.0
         _blue0 = (_fox0+_just0)/2.0
 #        _blue = (_blue+_blue0)/2.0
         _blue = max(-280,_blue)
         _blue = min( 280,_blue)
         _blue,_blue0=_blue0,_blue
+        
+        uu = -1*zz(0,0,7,-1,q=-2)
+        nn = -1*zz(0,0,7, 1,q=-2)
+
+        uuu = _blue+uu
+        nnn = _blue+nn
+
+        uuu=min(uuu, 100*(1+myth))#*2.0
+        nnn=max(nnn,-100*(1+myth))#*2.0
+        if uuu<100*myth:
+            uuu = 100*myth+(100*myth-uuu)
+        if nnn>-100*myth:
+            nnn = -100*myth-(nnn+100*myth)
+
         if passit>=0:
             todo = [passit]
         else:
