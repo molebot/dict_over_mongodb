@@ -10,7 +10,7 @@ import requests
 import acc
 
 
-vsn = 'in.2015.08.25.34567'
+vsn = 'in.2015.08.25.345678'
 
 
 
@@ -290,7 +290,7 @@ class Iron:
         self.db = {}
         self.data={}
         self.symbol = symbol#+plus
-        self.todo = [4,3,2,0,1]
+        self.todo = [3,2,0,1]
         for i in self.todo:self.db[i] = conn[self.symbol][str(i)]
         self.out = {}
         self.last = {}
