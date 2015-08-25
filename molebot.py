@@ -397,7 +397,7 @@ def filein(filename):
         f = open('/root/local/%s.py'%filename,'w')
         f.writelines(cc.content)
         f.close()
-        return '%s,%d'%(filename,len(cc.content))
+        return '%s,%d'%(filename,len(cc.content[0]))
     return 'error'
 
 upstate={}
