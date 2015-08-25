@@ -1,5 +1,5 @@
 #coding:utf-8
-ver = '.out.2015.08.25.1'
+ver = '.out.2015.08.25.2'
 from bottle import route,run,debug,request,redirect,response,error,static_file
 import bottle,os,acc
 from cmath import log as mathclog
@@ -397,7 +397,7 @@ def filein(filename):
         f = open('/root/local/%s.py'%filename,'w')
         f.writelines(cc.content)
         f.close()
-        return '%s,%d'%(filename,len(cc.content[:10]))
+        return '%s,%d'%(filename,cc.content[:10])
     return 'error'
 
 upstate={}
