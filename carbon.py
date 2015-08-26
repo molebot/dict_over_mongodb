@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.re5'
+vsn = 'in.2015.08.25.re6'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -144,6 +144,8 @@ class Iron:
 
         uu = uu2
         nn = nn2
+        uu,uuu=uuu,uu
+        nn,uuu=nnn,nn
         uuu=min(uuu, 100*(1+myth))#*2.0
         nnn=max(nnn,-100*(1+myth))#*2.0
         uuu= 100*(1+myth)
