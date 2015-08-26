@@ -188,21 +188,27 @@ class Iron:
             if llong*_pass>0:# DON'T CHANGE HERE
                 if (blast>nnn) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
                     saved['short'] = short = 1
+                    logger.error('++')
                 if (blast<uuu) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
                     saved['short'] = short = -1
+                    logger.error('--')
             else:
                 if _pass*llong<0:
 #                    if blast>max(uu,uuu):
                     if uuu+nnn>uu+nn:
                         saved['short'] = short = 1
+                        logger.error('+!')
 #                    if blast<min(nn,nnn):
                     if uuu+nnn<uu+nn:
                         saved['short'] = short = -1
+                        logger.error('-!')
         elif c[_pos_][0].get('doit',0)==0:
             if short>0 and (blast<nnn) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
                 saved['short'] = short = 0
+                logger.error('+=')
             if short<0 and (blast>uuu) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
                 saved['short'] = short = 0
+                logger.error('-=')
 
         if short!=0 and short!=llong:
             saved['long'] = llong = short
