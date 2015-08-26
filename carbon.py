@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.b2'
+vsn = 'in.2015.08.25.re1'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -132,13 +132,13 @@ class Iron:
         _blue = max(-280,_blue)
         _blue = min( 280,_blue)
         _blue,_blue0=_blue0,_blue
-        
+
         uu = -1*zz(0,0,7,-1,q=-2)
         nn = -1*zz(0,0,7, 1,q=-2)
-        if _blue0>100*(1+myth):
-            _blue0 -= (_blue0-(1+myth)*100)*2.0
-        elif _blue0<-100*(1+myth):
-            _blue0 += (-100*(1+myth)-_blue0)*2.0
+#        if _blue0>100*(1+myth):
+#            _blue0 -= (_blue0-(1+myth)*100)*2.0
+#        elif _blue0<-100*(1+myth):
+#            _blue0 += (-100*(1+myth)-_blue0)*2.0
         uuu = _blue0+uu
         nnn = _blue0+nn
 
@@ -186,20 +186,22 @@ class Iron:
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
             if llong*_pass>0:# DON'T CHANGE HERE
-                if (blast>uuu) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
+                if (blast>nnn) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
                     saved['short'] = short = 1
-                if (blast<nnn) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
+                if (blast<uuu) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
                     saved['short'] = short = -1
             else:
                 if _pass*llong<0:
-                    if blast>max(uu,uuu):
+#                    if blast>max(uu,uuu):
+                    if uuu+nnn>uu+nn:
                         saved['short'] = short = 1
-                    if blast<min(nn,nnn):
+#                    if blast<min(nn,nnn):
+                    if uuu+nnn<uu+nn:
                         saved['short'] = short = -1
         elif c[_pos_][0].get('doit',0)==0:
-            if short>0 and (blast<uuu) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
+            if short>0 and (blast<nnn) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
                 saved['short'] = short = 0
-            if short<0 and (blast>nnn) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
+            if short<0 and (blast>uuu) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
                 saved['short'] = short = 0
 
         if short!=0 and short!=llong:
