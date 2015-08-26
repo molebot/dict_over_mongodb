@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.b'
+vsn = 'in.2015.08.25.c1'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -142,15 +142,15 @@ class Iron:
         uuu = _blue0+uu
         nnn = _blue0+nn
 
-        uu = uu2
-        nn = nn2
-        uuu=min(uuu, 100*(1+myth))#*2.0
-        nnn=max(nnn,-100*(1+myth))#*2.0
+        uu = _blue0+uu
+        nn = _blue0+nn
+        uuu= 100*(1+myth)#*2.0
+        nnn=-100*(1+myth)#*2.0
 #        if uuu<100*myth:
 #            uuu = 100*myth+(100*myth-uuu)
 #        if nnn>-100*myth:
 #            nnn = -100*myth-(nnn+100*myth)
-        _blue += (uu+nn)/2.0
+        _blue -= (uu+nn)/2.0
         if passit>=0:
             todo = [passit]
         else:
@@ -238,7 +238,7 @@ class Iron:
                 if _p==0:
                     saved['base_p'] = 0.0001
                 else:
-                    saved['base_p'] = _p+_profit
+                    saved['base_p'] = _p+_profit-1
 
         if fill<1:
             if LS2*(c[1][0]['c']-Point)>=10:
