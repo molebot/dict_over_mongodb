@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.c2'
+vsn = 'in.2015.08.25.c7'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -123,34 +123,21 @@ class Iron:
         nn = -1*nk*zz(a,0,7, 1,q=-2)
         uu2 = uu-myth*nn
         nn2 = nn-myth*uu
-        uuu = uu2
-        nnn = nn2
+        uu = uu2
+        nn = nn2
 
         _blue = (_fox+_just)/2.0
         _blue0 = (_fox0+_just0)/2.0
-#        _blue = (_blue+_blue0)/2.0
-        _blue = max(-280,_blue)
-        _blue = min( 280,_blue)
+
         _blue,_blue0=_blue0,_blue
 
-        uu = -1*zz(0,0,7,-1,q=-2)
-        nn = -1*zz(0,0,7, 1,q=-2)
-#        if _blue0>100*(1+myth):
-#            _blue0 -= (_blue0-(1+myth)*100)*2.0
-#        elif _blue0<-100*(1+myth):
-#            _blue0 += (-100*(1+myth)-_blue0)*2.0
-#        uuu = _blue0+uu
-#        nnn = _blue0+nn
+        uuu = _blue0-1*zz(0,0,7,-1,q=-2)
+        nnn = _blue0-1*zz(0,0,7, 1,q=-2)
 
-        uu = _blue0+uu
-        nn = _blue0+nn
-        uuu= 100*(1+myth)#*2.0
-        nnn=-100*(1+myth)#*2.0
-#        if uuu<100*myth:
-#            uuu = 100*myth+(100*myth-uuu)
-#        if nnn>-100*myth:
-#            nnn = -100*myth-(nnn+100*myth)
-        _blue -= (uu+nn)/2.0
+        _blue -= (uu2+nn2)/2.0
+        _blue = min( 280,_blue)
+        _blue = max(-280,_blue)
+
         if passit>=0:
             todo = [passit]
         else:
@@ -178,7 +165,8 @@ class Iron:
 
 
 
-
+        uuu = 100*(1+myth)
+        nnn =-100*(1+myth)
         _pos_ = a = 0
         _pass = (_blue-(uuu+nnn)/2.0)
         blast = _blue
@@ -186,10 +174,10 @@ class Iron:
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
             if llong*_pass>0:# DON'T CHANGE HERE
-                if (blast>nnn) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
+                if (blast>uuu) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
                     saved['short'] = short = 1
                     logger.error('++')
-                if (blast<uuu) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
+                if (blast<nnn) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
                     saved['short'] = short = -1
                     logger.error('--')
             else:
@@ -298,7 +286,7 @@ class Iron:
         self.db = {}
         self.data={}
         self.symbol = symbol#+plus
-        self.todo = [4,3,2,0,1]
+        self.todo = [3,2,0,1]
         for i in self.todo:self.db[i] = conn[self.symbol][str(i)]
         self.out = {}
         self.last = {}
@@ -318,7 +306,7 @@ class Iron:
         for i in self.todo:
             self.new_price(price,i)
     def new_price(self,price,pos):
-        _result = list(self.db[pos].find({'do':1},sort=[('_id',desc)],limit=3))
+        _result = list(self.db[pos].find({'do':1},sort=[('_id',desc)],limit=2))
         self.last[pos] = _result
         length = fibo[pos+self.offset]
         if len(_result)>0:

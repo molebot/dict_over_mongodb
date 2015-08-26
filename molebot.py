@@ -1,5 +1,5 @@
 #coding:utf-8
-ver = '.out.2015.08.25.c1'
+ver = '.out.2015.08.25.c3'
 from bottle import route,run,debug,request,redirect,response,error,static_file
 import bottle,os,acc
 from cmath import log as mathclog
@@ -320,7 +320,7 @@ def index21():
         now = datetime.datetime.now()+datetime.timedelta(days=15)
         timestr = now.strftime('%y%m')
         htm = u'''<!DOCTYPE html>
-    <html><head><META HTTP-EQUIV="REFRESH" CONTENT="10"><title>%s</title></head><body>
+    <html><head><META HTTP-EQUIV="REFRESH" CONTENT="10"><title>%s</title></head><body>%s</br>
 <table><tr>
    <td>%s</td>
    <td><h1>%s<br/>%s</h1><br/><br/><br/><h2>开关：<a href="/kaiguan">-= %d =-</a> <br/>0:停止交易 1:启动交易</h2></td>
@@ -330,7 +330,7 @@ ver:%s
     </body></html>
     '''
         pp = Iron('cff2if')
-        return htm%(str(datetime.datetime.now()),pp.get_image('1','80','see2'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
+        return htm%(str(datetime.datetime.now()),cache.get('result',''),pp.get_image('1','80','see2'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
 
 @route('/log/:a')
 def logit(a):
