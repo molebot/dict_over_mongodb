@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.b3+'
+vsn = 'in.2015.08.25.b2'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -132,7 +132,7 @@ class Iron:
         _blue = max(-280,_blue)
         _blue = min( 280,_blue)
         _blue,_blue0=_blue0,_blue
-
+        
         uu = -1*zz(0,0,7,-1,q=-2)
         nn = -1*zz(0,0,7, 1,q=-2)
         if _blue0>100*(1+myth):
