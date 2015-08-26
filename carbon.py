@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.c7'
+vsn = 'in.2015.08.25.c9'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -182,11 +182,11 @@ class Iron:
                     logger.error('--')
             else:
                 if _pass*llong<0:
-                    if blast>uuu:
+                    if blast>uuu or c[1][0]['uuu']>uuu:
 #                    if uuu+nnn>uu+nn:
                         saved['short'] = short = 1
                         logger.error('+!')
-                    if blast<nnn:
+                    if blast<nnn or c[1][0]['nnn']>nnn:
 #                    if uuu+nnn<uu+nn:
                         saved['short'] = short = -1
                         logger.error('-!')
