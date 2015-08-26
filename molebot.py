@@ -1,5 +1,5 @@
 #coding:utf-8
-ver = '.out.2015.08.25.re1'
+ver = '.out.2015.08.25.c1'
 from bottle import route,run,debug,request,redirect,response,error,static_file
 import bottle,os,acc
 from cmath import log as mathclog

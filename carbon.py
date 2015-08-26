@@ -139,8 +139,8 @@ class Iron:
 #            _blue0 -= (_blue0-(1+myth)*100)*2.0
 #        elif _blue0<-100*(1+myth):
 #            _blue0 += (-100*(1+myth)-_blue0)*2.0
-        uuu = _blue0+uu
-        nnn = _blue0+nn
+#        uuu = _blue0+uu
+#        nnn = _blue0+nn
 
         uu = _blue0+uu
         nn = _blue0+nn
