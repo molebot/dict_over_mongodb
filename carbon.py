@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.re1'
+vsn = 'in.2015.08.25.re2'
 import time,datetime
 from hashlib import md5
 from core import *
