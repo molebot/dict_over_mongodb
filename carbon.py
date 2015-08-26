@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.re2'
+vsn = 'in.2015.08.25.re5'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -146,6 +146,8 @@ class Iron:
         nn = nn2
         uuu=min(uuu, 100*(1+myth))#*2.0
         nnn=max(nnn,-100*(1+myth))#*2.0
+        uuu= 100*(1+myth)
+        nnn=-100*(1+myth)
 #        if uuu<100*myth:
 #            uuu = 100*myth+(100*myth-uuu)
 #        if nnn>-100*myth:
@@ -194,19 +196,19 @@ class Iron:
                     logger.error('--')
             else:
                 if _pass*llong<0:
-#                    if blast>max(uu,uuu):
-                    if uuu+nnn>uu+nn:
+                    if blast>max(uu,uuu):
+#                    if uuu+nnn>uu+nn:
                         saved['short'] = short = 1
                         logger.error('+!')
-#                    if blast<min(nn,nnn):
-                    if uuu+nnn<uu+nn:
+                    if blast<min(nn,nnn):
+#                    if uuu+nnn<uu+nn:
                         saved['short'] = short = -1
                         logger.error('-!')
         elif c[_pos_][0].get('doit',0)==0:
-            if short>0 and (blast<nnn) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
+            if short>0 and (blast<uuu) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
                 saved['short'] = short = 0
                 logger.error('+=')
-            if short<0 and (blast>uuu) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
+            if short<0 and (blast>nnn) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
                 saved['short'] = short = 0
                 logger.error('-=')
 
