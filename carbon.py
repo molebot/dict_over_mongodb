@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 vsn = 'in.2015.08.25.c1'
+=======
+vsn = 'in.2015.08.25.8'
+>>>>>>> origin/master
 import time,datetime
 from hashlib import md5
 from core import *
@@ -132,20 +136,31 @@ class Iron:
         _blue = max(-280,_blue)
         _blue = min( 280,_blue)
         _blue,_blue0=_blue0,_blue
-        
+
         uu = -1*zz(0,0,7,-1,q=-2)
         nn = -1*zz(0,0,7, 1,q=-2)
-        if _blue0>100*(1+myth):
-            _blue0 -= (_blue0-(1+myth)*100)*2.0
-        elif _blue0<-100*(1+myth):
-            _blue0 += (-100*(1+myth)-_blue0)*2.0
+#        if _blue0>100*(1+myth):
+#            _blue0 -= (_blue0-(1+myth)*100)*2.0
+#        elif _blue0<-100*(1+myth):
+#            _blue0 += (-100*(1+myth)-_blue0)*2.0
         uuu = _blue0+uu
         nnn = _blue0+nn
 
+<<<<<<< HEAD
         uu = _blue0+uu
         nn = _blue0+nn
         uuu= 100*(1+myth)#*2.0
         nnn=-100*(1+myth)#*2.0
+=======
+        uu = uuu#uu2
+        nn = nnn#nn2
+#        uu,uuu=uuu,uu
+#        nn,uuu=nnn,nn
+#        uuu=min(uuu, 100*(1+myth))#*2.0
+#        nnn=max(nnn,-100*(1+myth))#*2.0
+        uuu= 100*(1+myth)
+        nnn=-100*(1+myth)
+>>>>>>> origin/master
 #        if uuu<100*myth:
 #            uuu = 100*myth+(100*myth-uuu)
 #        if nnn>-100*myth:
@@ -186,21 +201,29 @@ class Iron:
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
             if llong*_pass>0:# DON'T CHANGE HERE
-                if (blast>uuu) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
+                if (blast>nnn) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
                     saved['short'] = short = 1
-                if (blast<nnn) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
+                    logger.error('++')
+                if (blast<uuu) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
                     saved['short'] = short = -1
+                    logger.error('--')
             else:
                 if _pass*llong<0:
-                    if blast>max(uu,uuu):
+                    if blast>uuu:
+#                    if uuu+nnn>uu+nn:
                         saved['short'] = short = 1
-                    if blast<min(nn,nnn):
+                        logger.error('+!')
+                    if blast<nnn:
+#                    if uuu+nnn<uu+nn:
                         saved['short'] = short = -1
+                        logger.error('-!')
         elif c[_pos_][0].get('doit',0)==0:
             if short>0 and (blast<uuu) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
                 saved['short'] = short = 0
+                logger.error('+=')
             if short<0 and (blast>nnn) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
                 saved['short'] = short = 0
+                logger.error('-=')
 
         if short!=0 and short!=llong:
             saved['long'] = llong = short
@@ -290,7 +313,7 @@ class Iron:
         self.db = {}
         self.data={}
         self.symbol = symbol#+plus
-        self.todo = [3,2,0,1]
+        self.todo = [4,3,2,0,1]
         for i in self.todo:self.db[i] = conn[self.symbol][str(i)]
         self.out = {}
         self.last = {}

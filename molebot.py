@@ -1,5 +1,5 @@
 #coding:utf-8
-ver = '.out.2015.08.25.b'
+ver = '.out.2015.08.25.re1'
 from bottle import route,run,debug,request,redirect,response,error,static_file
 import bottle,os,acc
 from cmath import log as mathclog
@@ -455,6 +455,7 @@ def apicff(p):#	s symbol b deadline_base o base a account t aceq p price
         pp.price(mathlog(float(p))*3400.0)  #   delay 15 min
         pp.get_result()
         result = pp.result
+        logger.error(str(result))
         cache['point'] = p
         cache['result'] = result
         _level = pp.day_level()
