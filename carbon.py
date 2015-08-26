@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-vsn = 'in.2015.08.25.c1'
-=======
-vsn = 'in.2015.08.25.8'
->>>>>>> origin/master
+vsn = 'in.2015.08.25.c2'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -146,21 +142,10 @@ class Iron:
         uuu = _blue0+uu
         nnn = _blue0+nn
 
-<<<<<<< HEAD
         uu = _blue0+uu
         nn = _blue0+nn
         uuu= 100*(1+myth)#*2.0
         nnn=-100*(1+myth)#*2.0
-=======
-        uu = uuu#uu2
-        nn = nnn#nn2
-#        uu,uuu=uuu,uu
-#        nn,uuu=nnn,nn
-#        uuu=min(uuu, 100*(1+myth))#*2.0
-#        nnn=max(nnn,-100*(1+myth))#*2.0
-        uuu= 100*(1+myth)
-        nnn=-100*(1+myth)
->>>>>>> origin/master
 #        if uuu<100*myth:
 #            uuu = 100*myth+(100*myth-uuu)
 #        if nnn>-100*myth:
