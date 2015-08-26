@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.b1'
+vsn = 'in.2015.08.25.b2'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -238,7 +238,7 @@ class Iron:
                 if _p==0:
                     saved['base_p'] = 0.0001
                 else:
-                    saved['base_p'] = _p+_profit
+                    saved['base_p'] = _p+_profit-1
 
         if fill<1:
             if LS2*(c[1][0]['c']-Point)>=10:
