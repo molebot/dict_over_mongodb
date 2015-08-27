@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.c11'
+vsn = 'in.2015.08.25.c15'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -131,8 +131,8 @@ class Iron:
 
         _blue,_blue0=_blue0,_blue
 
-        uuu = _blue0-1*zz(0,0,7,-1,q=-2)
-        nnn = _blue0-1*zz(0,0,7, 1,q=-2)
+        uuu = ru=_blue0-1*zz(0,0,7,-1,q=-2)
+        nnn = rn=_blue0-1*zz(0,0,7, 1,q=-2)
 
         uuu0 = uu - (nnn-uu)
         nnn0 = nn - (uuu-nn)
@@ -145,6 +145,12 @@ class Iron:
         _blue -= (uu2+nn2)/2.0
         _blue = min( 280,_blue)
         _blue = max(-280,_blue)
+        _blue0 = min( 162,_blue0)
+        _blue0 = max(-162,_blue0)
+
+#        uuu = nnn = _blue0
+        uuu = ru
+        nnn = rn
 
         if passit>=0:
             todo = [passit]
@@ -156,8 +162,8 @@ class Iron:
             c[i][0]['just'] = _blue0# = saved['old'][2][1]
             c[i][0]['uuu'] = uuu
             c[i][0]['nnn'] = nnn
-            c[i][0]['uu'] = uu
-            c[i][0]['nn'] = nn
+            c[i][0]['uu'] = ru*0
+            c[i][0]['nn'] = rn*0
             c[i][0]['fox'] = _blue
             self.cache[i][0] = c[i][0]
             self.save(i,c[i][0])
@@ -182,27 +188,27 @@ class Iron:
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
             if llong*_pass>0:# DON'T CHANGE HERE
-                if (blast>uuu) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
+                if (blast>nnn) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
                     saved['short'] = short = 1
                     logger.error('++')
-                if (blast<nnn) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
+                if (blast<uuu) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
                     saved['short'] = short = -1
                     logger.error('--')
             else:
-                if _pass*llong<0:
-                    if blast>uuu:
+                if (uuu+nnn)*llong<0:
+                    if uuu+nnn>0:
 #                    if uuu+nnn>uu+nn:
                         saved['short'] = short = 1
                         logger.error('+!')
-                    if blast<nnn:
+                    if uuu+nnn<0:
 #                    if uuu+nnn<uu+nn:
                         saved['short'] = short = -1
                         logger.error('-!')
         elif c[_pos_][0].get('doit',0)==0:
-            if short>0 and (blast<uuu) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
+            if short>0 and (blast<nnn) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
                 saved['short'] = short = 0
                 logger.error('+=')
-            if short<0 and (blast>nnn) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
+            if short<0 and (blast>uuu) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
                 saved['short'] = short = 0
                 logger.error('-=')
 

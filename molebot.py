@@ -472,7 +472,7 @@ def apicff(p):#	s symbol b deadline_base o base a account t aceq p price
                     cache['closeit'] = 0
                 if result['result']<0 and _just-nnn<(uuu-nnn)*(myth**(_level+2)):
                     cache['closeit'] = 0
-        logger.error('%.4f'%(time.time()-tt))
+#        logger.error('%.4f'%(time.time()-tt))
         return 'd'
     else:
         logger.error("ERROR DATA REQUEST")
