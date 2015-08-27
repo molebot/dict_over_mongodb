@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.c10'
+vsn = 'in.2015.08.25.c11'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -134,9 +134,11 @@ class Iron:
         uuu = _blue0-1*zz(0,0,7,-1,q=-2)
         nnn = _blue0-1*zz(0,0,7, 1,q=-2)
 
-        uuu = uu - (nnn-uu)
-        nnn = nn - (uuu-nn)
+        uuu0 = uu - (nnn-uu)
+        nnn0 = nn - (uuu-nn)
 
+        uuu = uuu0
+        nnn = nnn0
         if uuu> 100*(1+myth):uuu = 100*(1+myth)
         if nnn<-100*(1+myth):nnn =-100*(1+myth)
         
