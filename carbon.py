@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.d4'
+vsn = 'in.2015.08.25.d5'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -141,6 +141,7 @@ class Iron:
         _blue0 = (_fox0+_just0)/2.0
         _blue = _blue0
 
+
         if passit>=0:
             todo = [passit]
         else:
@@ -172,7 +173,6 @@ class Iron:
         _pos_ = a = 0
         _pass = (_blue-(uuu+nnn)/2.0)
         blast = _blue0
-        uuu = nnn = 0
         _just = 0
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
@@ -183,9 +183,9 @@ class Iron:
                     saved['short'] = short = -1
             else:
                 if _pass*llong<0:
-                    if _blue1>0 and _blue0>0:
+                    if blast>uuu:
                         saved['short'] = short = 1
-                    if _blue1<0 and _blue0<0:
+                    if blast<nnn:
                         saved['short'] = short = -1
         elif c[_pos_][0].get('doit',0)==0:
             if short>0 and (blast<uuu) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
