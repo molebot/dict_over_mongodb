@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.c16'
+vsn = 'in.2015.08.25.d1'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -123,35 +123,34 @@ class Iron:
         nn = -1*nk*zz(a,0,7, 1,q=-2)
         uu2 = uu-myth*nn
         nn2 = nn-myth*uu
-        uu = uu2
-        nn = nn2
+        uuu = uu2
+        nnn = nn2
 
         _blue = (_fox+_just)/2.0
         _blue0 = (_fox0+_just0)/2.0
-
+#        _blue = (_blue+_blue0)/2.0
+        _blue = max(-280,_blue)
+        _blue = min( 280,_blue)
         _blue,_blue0=_blue0,_blue
 
-        uuu = ru=_blue0-1*zz(0,0,7,-1,q=-2)
-        nnn = rn=_blue0-1*zz(0,0,7, 1,q=-2)
+        uu = -1*zz(0,0,7,-1,q=-2)
+        nn = -1*zz(0,0,7, 1,q=-2)
+        if _blue0>100*(1+myth):
+            _blue0 -= (_blue0-(1+myth)*100)*2.0
+        elif _blue0<-100*(1+myth):
+            _blue0 += (-100*(1+myth)-_blue0)*2.0
+        uuu = _blue0+uu
+        nnn = _blue0+nn
 
-        uuu0 = uu - (nnn-uu)
-        nnn0 = nn - (uuu-nn)
-
-        uuu = uuu0
-        nnn = nnn0
-        if uuu> 100*(1+myth):uuu = 100*(1+myth)
-        if nnn<-100*(1+myth):nnn =-100*(1+myth)
-        
-#        _blue -= (uu2+nn2)/2.0
-        _blue = min( 280,_blue)
-        _blue = max(-280,_blue)
-        _blue0 = min( 162,_blue0)
-        _blue0 = max(-162,_blue0)
-
-#        uuu = nnn = _blue0
-        uuu = -1*rn
-        nnn = -1*ru
-
+        uu = uu2
+        nn = nn2
+        uuu=min(uuu, 100*(1+myth))#*2.0
+        nnn=max(nnn,-100*(1+myth))#*2.0
+#        if uuu<100*myth:
+#            uuu = 100*myth+(100*myth-uuu)
+#        if nnn>-100*myth:
+#            nnn = -100*myth-(nnn+100*myth)
+        _blue -= (uu2+nn2)/2.0
         if passit>=0:
             todo = [passit]
         else:
@@ -162,8 +161,8 @@ class Iron:
             c[i][0]['just'] = _blue0# = saved['old'][2][1]
             c[i][0]['uuu'] = uuu
             c[i][0]['nnn'] = nnn
-            c[i][0]['uu'] = ru*0
-            c[i][0]['nn'] = rn*0
+            c[i][0]['uu'] = uu
+            c[i][0]['nn'] = nn
             c[i][0]['fox'] = _blue
             self.cache[i][0] = c[i][0]
             self.save(i,c[i][0])
@@ -179,8 +178,7 @@ class Iron:
 
 
 
-#        uuu = 100*(1+myth)
-#        nnn =-100*(1+myth)
+
         _pos_ = a = 0
         _pass = (_blue-(uuu+nnn)/2.0)
         blast = _blue
@@ -190,27 +188,19 @@ class Iron:
             if llong*_pass>0:# DON'T CHANGE HERE
                 if (blast>uuu) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
                     saved['short'] = short = 1
-                    logger.error('++')
                 if (blast<nnn) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
                     saved['short'] = short = -1
-                    logger.error('--')
             else:
                 if _pass*llong<0:
-                    if blast>uuu:
-#                    if uuu+nnn>uu+nn:
+                    if blast>max(uu,uuu):
                         saved['short'] = short = 1
-                        logger.error('+!')
-                    if blast<nnn:
-#                    if uuu+nnn<uu+nn:
+                    if blast<min(nn,nnn):
                         saved['short'] = short = -1
-                        logger.error('-!')
         elif c[_pos_][0].get('doit',0)==0:
             if short>0 and (blast<uuu) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
                 saved['short'] = short = 0
-                logger.error('+=')
             if short<0 and (blast>nnn) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
                 saved['short'] = short = 0
-                logger.error('-=')
 
         if short!=0 and short!=llong:
             saved['long'] = llong = short
@@ -320,7 +310,7 @@ class Iron:
         for i in self.todo:
             self.new_price(price,i)
     def new_price(self,price,pos):
-        _result = list(self.db[pos].find({'do':1},sort=[('_id',desc)],limit=2))
+        _result = list(self.db[pos].find({'do':1},sort=[('_id',desc)],limit=3))
         self.last[pos] = _result
         length = fibo[pos+self.offset]
         if len(_result)>0:
