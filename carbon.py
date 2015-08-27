@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.d7'
+vsn = 'in.2015.08.25.d8'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -222,16 +222,20 @@ class Iron:
             if _day_.hour==9 and _day_.minute<30:
                 saved['dead'] = dead = 0
                 saved['base_p']=0
+                saved['base_c']=0
             elif _day_.hour==15:
                 saved['dead'] = dead = 0
                 saved['base_p']=0
+                saved['base_c']=0
             else:
                 saved['dead'] = dead = 1
                 _p = saved.get('base_p',0)
                 if _p==0:
                     saved['base_p'] = 0.0001
+                    saved['base_c'] = 0
                 else:
                     saved['base_p'] = _p+_profit-1
+                    saved['base_c'] = saved.get('base_c',0)+1
 
         if fill<1:
             if LS2*(c[1][0]['c']-Point)>=10:
@@ -257,7 +261,7 @@ class Iron:
             time_str = _day_.strftime('%m.%d.%H:%M:%S')
             self.state['ss']=LS2
             _his = self.state.get('his',['none'])
-            _his.append('%s#%.1f=%d@%.1f'%(time_str,self.realprice,LS2,saved.get('base_p',0)))
+            _his.append('%s#%.1f=%d@%.1f=%d'%(time_str,self.realprice,LS2,saved.get('base_p',0),saved.get('base_c',0)))
             self.state['his'] = _his[-26:]
         self.result = out
         self.all_result()
