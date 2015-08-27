@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.d8'
+vsn = 'in.2015.08.25.d9'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -244,6 +244,7 @@ class Iron:
         if _day_.hour==15 and _day_.minute>10:
             saved['dead'] = dead = 0
             saved['base_p']=0
+            saved['base_c'] = 0
             closeit = 0
         else:
             closeit = 1
