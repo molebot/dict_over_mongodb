@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.d2'
+vsn = 'in.2015.08.25.d4'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -106,8 +106,8 @@ class Iron:
         ppp = abs(kmm(a))
         pk = (ppp/(100*myth))**(1+myth)
         pss = pk*(kmm(a)-zz(a,0,7,0))+zz(a,0,7,0)
-        _fox = zz(b,0,7,0)+pss*kw(b,pp=-2)/(myth*200)
-        _just = zz(b,0,7,0)+kmm(a)*kw(b,pp=-2)/(myth*200)
+        _fox1 = zz(b,0,7,0)+pss*kw(b,pp=-2)/(myth*200)
+        _just1 = zz(b,0,7,0)+kmm(a)*kw(b,pp=-2)/(myth*200)
 
         ppp0 = abs(kmm(a-1))
         pk0 = (ppp0/(100*myth))**(1+myth)
@@ -115,54 +115,44 @@ class Iron:
         _fox0 = zz(b-1,0,7,0)+pss0*kw(b-1,pp=-2)/(myth*200)
         _just0 = zz(b-1,0,7,0)+kmm(a-1)*kw(b-1,pp=-2)/(myth*200)
 
-        uuu = -1*zz(b,0,7,-1,q=-1)
-        nnn = -1*zz(b,0,7, 1,q=-1)
-        uk = min(1.0,abs(max(0,uuu))/abs(nnn))
-        nk = min(1.0,abs(min(0,nnn))/abs(uuu))
-        uu = -1*uk*zz(a,0,7,-1,q=-2)
-        nn = -1*nk*zz(a,0,7, 1,q=-2)
-        uu2 = uu-myth*nn
-        nn2 = nn-myth*uu
-        uuu = uu2
-        nnn = nn2
+        uuu1 = -1*zz(b,0,7,-1,q=-1)
+        nnn1 = -1*zz(b,0,7, 1,q=-1)
+        uk1 = min(1.0,abs(max(0,uuu1))/abs(nnn1))
+        nk1 = min(1.0,abs(min(0,nnn1))/abs(uuu1))
+        uu1 = -1*uk1*zz(a,0,7,-1,q=-2)
+        nn1 = -1*nk1*zz(a,0,7, 1,q=-2)
+        uu12 = uu1-myth*nn1
+        nn12 = nn1-myth*uu1
+        uuu = uu12
+        nnn = nn12
 
-        _blue1 = (_fox+_just)/2.0
+        uuu0 = -1*zz(b-1,0,7,-1,q=-1)
+        nnn0 = -1*zz(b-1,0,7, 1,q=-1)
+        uk0 = min(1.0,abs(max(0,uuu0))/abs(nnn0))
+        nk0 = min(1.0,abs(min(0,nnn0))/abs(uuu0))
+        uu0 = -1*uk0*zz(a-1,0,7,-1,q=-2)
+        nn0 = -1*nk0*zz(a-1,0,7, 1,q=-2)
+        uu02 = uu0-myth*nn0
+        nn02 = nn0-myth*uu0
+        uu = uu02
+        nn = nn02
+
+        _blue1 = (_fox1+_just1)/2.0
         _blue0 = (_fox0+_just0)/2.0
-#        _blue = (_blue+_blue0)/2.0
-        _blue = max(-280,_blue1)
-        _blue = min( 280,_blue)
-        _blue,_blue0=_blue0,_blue
+        _blue = _blue0
 
-        uu = -1*zz(0,0,7,-1,q=-2)
-        nn = -1*zz(0,0,7, 1,q=-2)
-        if _blue0>100*(1+myth):
-            _blue0 -= (_blue0-(1+myth)*100)*2.0
-        elif _blue0<-100*(1+myth):
-            _blue0 += (-100*(1+myth)-_blue0)*2.0
-        uuu = _blue0+uu
-        nnn = _blue0+nn
-
-        uu = uu2
-        nn = nn2
-        uuu=min(uuu, 100*(1+myth))#*2.0
-        nnn=max(nnn,-100*(1+myth))#*2.0
-#        if uuu<100*myth:
-#            uuu = 100*myth+(100*myth-uuu)
-#        if nnn>-100*myth:
-#            nnn = -100*myth-(nnn+100*myth)
-        _blue -= (uu2+nn2)/2.0
         if passit>=0:
             todo = [passit]
         else:
             todo = self.todo
         for i in todo:
             c[i][0]['point'] = saved.get('point',c[1][0]['c'])
-            c[i][0]['mole'] = _blue
+            c[i][0]['mole'] = _blue1
             c[i][0]['just'] = _blue0# = saved['old'][2][1]
             c[i][0]['uuu'] = uuu
             c[i][0]['nnn'] = nnn
-            c[i][0]['uu'] = uu2
-            c[i][0]['nn'] = nn2
+            c[i][0]['uu'] = uu
+            c[i][0]['nn'] = nn
             c[i][0]['fox'] = _blue1
             self.cache[i][0] = c[i][0]
             self.save(i,c[i][0])
@@ -181,7 +171,8 @@ class Iron:
 
         _pos_ = a = 0
         _pass = (_blue-(uuu+nnn)/2.0)
-        blast = _blue
+        blast = _blue0
+        uuu = nnn = 0
         _just = 0
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
@@ -192,9 +183,9 @@ class Iron:
                     saved['short'] = short = -1
             else:
                 if _pass*llong<0:
-                    if blast>max(uu,uuu):
+                    if _blue1>0 and _blue0>0:
                         saved['short'] = short = 1
-                    if blast<min(nn,nnn):
+                    if _blue1<0 and _blue0<0:
                         saved['short'] = short = -1
         elif c[_pos_][0].get('doit',0)==0:
             if short>0 and (blast<uuu) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
