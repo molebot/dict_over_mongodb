@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.c15'
+vsn = 'in.2015.08.25.c16'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -142,15 +142,15 @@ class Iron:
         if uuu> 100*(1+myth):uuu = 100*(1+myth)
         if nnn<-100*(1+myth):nnn =-100*(1+myth)
         
-        _blue -= (uu2+nn2)/2.0
+#        _blue -= (uu2+nn2)/2.0
         _blue = min( 280,_blue)
         _blue = max(-280,_blue)
         _blue0 = min( 162,_blue0)
         _blue0 = max(-162,_blue0)
 
 #        uuu = nnn = _blue0
-        uuu = ru
-        nnn = rn
+        uuu = -1*rn
+        nnn = -1*ru
 
         if passit>=0:
             todo = [passit]
@@ -188,27 +188,27 @@ class Iron:
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
             if llong*_pass>0:# DON'T CHANGE HERE
-                if (blast>nnn) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
+                if (blast>uuu) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
                     saved['short'] = short = 1
                     logger.error('++')
-                if (blast<uuu) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
+                if (blast<nnn) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
                     saved['short'] = short = -1
                     logger.error('--')
             else:
-                if (uuu+nnn)*llong<0:
-                    if uuu+nnn>0:
+                if _pass*llong<0:
+                    if blast>uuu:
 #                    if uuu+nnn>uu+nn:
                         saved['short'] = short = 1
                         logger.error('+!')
-                    if uuu+nnn<0:
+                    if blast<nnn:
 #                    if uuu+nnn<uu+nn:
                         saved['short'] = short = -1
                         logger.error('-!')
         elif c[_pos_][0].get('doit',0)==0:
-            if short>0 and (blast<nnn) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
+            if short>0 and (blast<uuu) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
                 saved['short'] = short = 0
                 logger.error('+=')
-            if short<0 and (blast>uuu) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
+            if short<0 and (blast>nnn) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
                 saved['short'] = short = 0
                 logger.error('-=')
 
