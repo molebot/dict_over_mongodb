@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.d12'
+vsn = 'in.2015.08.25.f'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -138,12 +138,16 @@ class Iron:
         nn = nn02
 
         _blue1 = (_fox1+_just1)/2.0
-        _blue0 = (_fox0+_just0)/2.0
+        _blue0 = _just0#(_fox0+_just0)/2.0
         _blue = _blue0
 
-        uuu = 100*(1+myth)-max(0,_blue1-100*(1+myth))#min( 100*(1+myth),max(_blue1,uuu))
-        nnn =-100*(1+myth)-min(0,_blue1+100*(1+myth))#max(-100*(1+myth),min(_blue1,nnn))
+        _blue1 = min( (2+myth)*100,_blue1)
+        _blue1 = max(-100*(2+myth),_blue1)
 
+        uuu = max( 100*(1+myth),max(_blue1,uuu))
+        nnn = min(-100*(1+myth),min(_blue1,nnn))
+#        uuu = (uuu+uu12)/2.0
+#        nnn = (nnn+nn12)/2.0
 
         if passit>=0:
             todo = [passit]
@@ -153,8 +157,8 @@ class Iron:
             c[i][0]['point'] = saved.get('point',c[1][0]['c'])
             c[i][0]['mole'] = _blue1
             c[i][0]['just'] = _blue0# = saved['old'][2][1]
-            c[i][0]['uuu'] = uuu
-            c[i][0]['nnn'] = nnn
+            c[i][0]['uuu'] = uu02
+            c[i][0]['nnn'] = nn02
             c[i][0]['uu'] = uu12
             c[i][0]['nn'] = nn12
             c[i][0]['fox'] = _blue1
@@ -173,9 +177,11 @@ class Iron:
 
 
 
-        _pos_ = a = 0
+        _pos_ = a = 1
         _pass = (_blue-(uuu+nnn)/2.0)
-        blast = _blue0
+        blast = _blue1
+        uuu = uu12
+        nnn = nn12
         _just = 0
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
