@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.d11'
+vsn = 'in.2015.08.25.d12'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -142,7 +142,7 @@ class Iron:
         _blue = _blue0
 
         uuu = 100*(1+myth)-max(0,_blue1-100*(1+myth))#min( 100*(1+myth),max(_blue1,uuu))
-        nnn =-100*(1+myth)+min(0,_blue1+100*(1+myth))#max(-100*(1+myth),min(_blue1,nnn))
+        nnn =-100*(1+myth)-min(0,_blue1+100*(1+myth))#max(-100*(1+myth),min(_blue1,nnn))
 
 
         if passit>=0:
