@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.f'
+vsn = 'in.2015.08.25.f1'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -156,12 +156,12 @@ class Iron:
         for i in todo:
             c[i][0]['point'] = saved.get('point',c[1][0]['c'])
             c[i][0]['mole'] = _blue1
-            c[i][0]['just'] = _blue0# = saved['old'][2][1]
-            c[i][0]['uuu'] = uu02
-            c[i][0]['nnn'] = nn02
-            c[i][0]['uu'] = uu12
-            c[i][0]['nn'] = nn12
-            c[i][0]['fox'] = _blue1
+            c[i][0]['just'] = _blue1# = saved['old'][2][1]
+            c[i][0]['uuu'] = uu12
+            c[i][0]['nnn'] = nn12
+            c[i][0]['uu'] = uu02
+            c[i][0]['nn'] = nn02
+            c[i][0]['fox'] = _blue0
             self.cache[i][0] = c[i][0]
             self.save(i,c[i][0])
         if passit>0:return c[passit][0]
@@ -180,8 +180,8 @@ class Iron:
         _pos_ = a = 1
         _pass = (_blue-(uuu+nnn)/2.0)
         blast = _blue1
-        uuu = uu12
-        nnn = nn12
+        uuu = min( 100*(1+myth),uu12)
+        nnn = max(-100*(1+myth),nn12)
         _just = 0
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
