@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.f3'
+vsn = 'in.2015.08.25.h'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -12,7 +12,9 @@ import acc
 
 
 
-
+def clear_old(db,days):
+    _time = time.time()-days*24*3600
+    db.remove({'time':{'$lt':_time}})
 
 def filelog(symbol,i,j,o):
     p = dict2str(o)
@@ -20,6 +22,7 @@ def filelog(symbol,i,j,o):
 
 def getprice(one):
     return (one['h']+one['l'])/2.0
+def getfox(one):return one['fox']
 cache['hh'] = {}
 
 fill_state={}
@@ -109,12 +112,6 @@ class Iron:
         _fox1 = zz(b,0,7,0)+pss*kw(b,pp=-2)/(myth*200)
         _just1 = zz(b,0,7,0)+kmm(a)*kw(b,pp=-2)/(myth*200)
 
-        ppp0 = abs(kmm(a-1))
-        pk0 = (ppp0/(100*myth))**(1+myth)
-        pss0 = pk0*(kmm(a-1)-zz(a-1,0,7,0))+zz(a-1,0,7,0)
-        _fox0 = zz(b-1,0,7,0)+pss0*kw(b-1,pp=-2)/(myth*200)
-        _just0 = zz(b-1,0,7,0)+kmm(a-1)*kw(b-1,pp=-2)/(myth*200)
-
         uuu1 = -1*zz(b,0,7,-1,q=-1)
         nnn1 = -1*zz(b,0,7, 1,q=-1)
         uk1 = min(1.0,abs(max(0,uuu1))/abs(nnn1))
@@ -126,41 +123,29 @@ class Iron:
         uuu = uu12
         nnn = nn12
 
-        uuu0 = -1*zz(b-1,0,7,-1,q=-1)
-        nnn0 = -1*zz(b-1,0,7, 1,q=-1)
-        uk0 = min(1.0,abs(max(0,uuu0))/abs(nnn0))
-        nk0 = min(1.0,abs(min(0,nnn0))/abs(uuu0))
-        uu0 = -1*uk0*zz(a-1,0,7,-1,q=-2)
-        nn0 = -1*nk0*zz(a-1,0,7, 1,q=-2)
-        uu02 = uu0-myth*nn0
-        nn02 = nn0-myth*uu0
-        uu = uu02
-        nn = nn02
-
         _blue1 = (_fox1+_just1)/2.0
-        _blue0 = _just0#(_fox0+_just0)/2.0
-        _blue = _blue0
+        _blue = _blue1
 
         _blue1 = min( (2+myth)*100,_blue1)
         _blue1 = max(-100*(2+myth),_blue1)
 
-        uuu = max( 100*(1+myth),max(_blue1,uuu))
-        nnn = min(-100*(1+myth),min(_blue1,nnn))
-#        uuu = (uuu+uu12)/2.0
-#        nnn = (nnn+nn12)/2.0
+        uuu = uu12
+        nnn = nn12#min(-100*(1+myth),min(_blue1,nnn))
 
         if passit>=0:
             todo = [passit]
         else:
             todo = self.todo
+            uuk = -1*mm(a,0,7,-1,q=-2)
+            nnk = -1*mm(a,0,7, 1,q=-2)
+            c[1][0]['uu'] = uuk
+            c[1][0]['nn'] = nnk
         for i in todo:
             c[i][0]['point'] = saved.get('point',c[1][0]['c'])
-            c[i][0]['mole'] = _blue0
-            c[i][0]['just'] = _blue0# = saved['old'][2][1]
-            c[i][0]['uuu'] = uu12
-            c[i][0]['nnn'] = nn12
-            c[i][0]['uu'] = uu02
-            c[i][0]['nn'] = nn02
+            c[i][0]['mole'] = _blue1
+            c[i][0]['just'] = _blue1# = saved['old'][2][1]
+            c[i][0]['uuu'] = c[1][1].get('uu',0.0)
+            c[i][0]['nnn'] = c[1][1].get('nn',0.0)
             c[i][0]['fox'] = _blue1
             self.cache[i][0] = c[i][0]
             self.save(i,c[i][0])
@@ -180,15 +165,15 @@ class Iron:
         _pos_ = a = 1
         _pass = (_blue-(uuu+nnn)/2.0)
         blast = _blue1
-        uuu = min( 100*(1+myth),uu12)
-        nnn = max(-100*(1+myth),nn12)
+        uuu = min( 100*(1+myth),uuk)
+        nnn = max(-100*(1+myth),nnk)
         _just = 0
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
             if llong*_pass>0:# DON'T CHANGE HERE
-                if (blast>uuu) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
+                if (blast>uuu) and c[1][0]['fox']>c[1][1]['fox']:
                     saved['short'] = short = 1
-                if (blast<nnn) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
+                if (blast<nnn) and c[1][0]['fox']<c[1][1]['fox']:
                     saved['short'] = short = -1
             else:
                 if _pass*llong<0:
@@ -197,9 +182,9 @@ class Iron:
                     if blast<nnn:
                         saved['short'] = short = -1
         elif c[_pos_][0].get('doit',0)==0:
-            if short>0 and (blast<uuu) and zz(a,0,3,-1,q=-1)<zz(a,1,3,-1,q=-1):
+            if short>0 and (blast<uuu) and c[1][0]['fox']<c[1][1]['fox']:
                 saved['short'] = short = 0
-            if short<0 and (blast>nnn) and zz(a,0,3, 1,q=-1)>zz(a,1,3, 1,q=-1):
+            if short<0 and (blast>nnn) and c[1][0]['fox']>c[1][1]['fox']:
                 saved['short'] = short = 0
 
         if short!=0 and short!=llong:
@@ -291,12 +276,13 @@ class Iron:
 #=====================================================================
 #=====================================================================
 #=====================================================================
-    def __init__(self,symbol,plus="20150723"):
+    def __init__(self,symbol,timer,plus="20150723"):
         self.db = {}
         self.data={}
         self.symbol = symbol#+plus
-        self.todo = [3,2,0,1]
+        self.todo = [3,1]
         for i in self.todo:self.db[i] = conn[self.symbol][str(i)]
+        self.raw = conn[self.symbol]['raw']
         self.out = {}
         self.last = {}
         _a = allstate[self.symbol]
@@ -304,18 +290,23 @@ class Iron:
             self.state = _a[0]
         else:
             self.state = {}
+        self.time = timer
+        self.day = datetime.datetime.fromtimestamp(timer)
+        self.hour = self.day.hour
         self.cache = {}
         self.offset = 1
-        self.day = datetime.datetime.now()
-        self.hour = self.day.hour
+    def __del__(self):
+        thread.start_new_thread(clear_old,(self.raw,60))
     def all_result(self):
         allstate[self.symbol] = self.state
         return {'state':self.state,'result':self.result}
-    def price(self,price):
+    def price(self,price,real,timer):
+        self.realprice = real
+        self.raw.save({'time':self.time,'price':price,'real':real})
         for i in self.todo:
             self.new_price(price,i)
     def new_price(self,price,pos):
-        _result = list(self.db[pos].find({'do':1},sort=[('_id',desc)],limit=3))
+        _result = list(self.db[pos].find({'do':1},sort=[('_id',desc)],limit=2))
         self.last[pos] = _result
         length = fibo[pos+self.offset]
         if len(_result)>0:
@@ -327,7 +318,7 @@ class Iron:
             now['c'] = price
             now['h'] = max(now['c'],now['h'])
             now['l'] = min(now['c'],now['l'])
-            now['time'] = time.time()
+            now['time'] = self.time
             now['do'] = 0
             now,last = self.check_k_len(now,length,last,pos)
             now,last = self.check_k_hour(now,last,pos)
@@ -336,7 +327,6 @@ class Iron:
             last = None
             now = {'_id':0,'do':0,'o':price,'h':price,'l':price,'c':price,'hour':self.hour}
             now = self.check_base(pos,now,last)
-    def real(self,p):self.realprice = p
     def getmoney(self,p):self.money = p
     def check_k_len(self,now,length,last,pos):
         if now['h']-now['o']>length:
@@ -369,7 +359,7 @@ class Iron:
         if now.get('hour',-1)!=self.hour:
             p = now['c']
             new = {'o':p,'h':p,'l':p,'c':p,'do':0,'hour':self.hour,'point':now.get('point',0)}
-            new['_id'] = int(time.time()/3600)*1000000
+            new['_id'] = int(self.time/3600)*1000000
             new['cnt'] = 0
             self.check_len(pos)
             now = self.check_base(pos,now,last)
@@ -418,7 +408,7 @@ class Iron:
                     _todo[mm][_str_] = vle
 #=====================================================================
         _todo['do']=1
-        _todo['time'] = time.time()
+        _todo['time'] = self.time
         if _last:
             self.cache[pos] = [_todo,_last]
             self.save(pos,_last)
@@ -427,6 +417,37 @@ class Iron:
         self.save(pos,_todo)
         if pos==1:
             _todo = self.get_result(passit=pos)
+            _flow = [
+            ('pm','ps','hp',getfox),
+            ]
+            if _last:
+                for mm,ss,hh,func in _flow:
+                    if hh not in _todo:
+                        _todo[hh] = [func(_last)]+_last.get(hh,[])[:fibo[-1]]
+                    _prcs = func(_todo)
+                    _list = [_prcs] + _todo[hh]
+                    _todo[mm]={}
+                    _todo[ss]={}
+                    for i in fibo:
+                        _str_ = str(i)
+                        vle = ma(_prcs,_last.get(mm,{_str_:0.0})[_str_],i)
+                        _todo[ss][_str_] = st(vle,[one for one in _list[:i]],i)
+                        _todo[mm][_str_] = vle
+            else:
+                for mm,ss,hh,func in _flow:
+                    if hh not in _todo:
+                        _todo[hh] = []
+                    _prcs = func(_todo)
+                    _list = [_prcs] + _todo[hh]
+                    _todo[mm]={}
+                    _todo[ss]={}
+                    for i in fibo:
+                        _str_ = str(i)
+                        vle = _prcs
+                        _todo[ss][_str_] = 0.0
+                        _todo[mm][_str_] = vle
+            self.save(pos,_todo)
+
         return _todo
     def data_out(self,pos):
         _result = self.db[pos].find({'do':1},sort=[('_id',desc)],limit=2)
@@ -447,8 +468,7 @@ class Iron:
     def save(self,Pos,Dict):
         self.db[Pos].save(Dict)
     def check_len(self,pos):
-        _time = time.time()-(1+pos)*2*24*3600
-        self.db[pos].remove({'time':{'$lt':_time}})
+        thread.start_new_thread(clear_old,(self.db[pos],(pos+1)*2))
 #=====================================================================
     def get_image(self,pos,lens,group,offset=0):
         data = self.db[int(pos)]

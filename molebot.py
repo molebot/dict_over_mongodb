@@ -1,5 +1,5 @@
 #coding:utf-8
-ver = '.out.2015.08.25.c4'
+ver = '.out.2015.08.25.h'
 from bottle import route,run,debug,request,redirect,response,error,static_file
 import bottle,os,acc
 from cmath import log as mathclog
@@ -17,8 +17,6 @@ from qqmail import *
 import thread
 import requests
 
-def log_(a):
-    logger.error(str(a))
 
 def mathlog(a):return mathclog(a).real
 #20150817aaa
@@ -68,7 +66,7 @@ def index_show_svg(o):
     <html><head><title></title></head><body>
     %s <br/> %s
     </body></html>
-    '''%(Iron('cff2if').get_image(m,l,n,offset=int(o)),''.join(['''
+    '''%(Iron('cff2if',time.time()).get_image(m,l,n,offset=int(o)),''.join(['''
         <a href="/all/%d" target="_blank">-%d-</a>
         '''%(i,i) for i in range(15)]))
 
@@ -83,7 +81,7 @@ def index_show_svg(o):
     <html><head><title></title></head><body>
     %s <br/> %s
     </body></html>
-    '''%(Iron('cff2if').get_image(m,l,n,offset=int(o)),''.join(['''
+    '''%(Iron('cff2if',time.time()).get_image(m,l,n,offset=int(o)),''.join(['''
         <a href="/all1/%d" target="_blank">-%d-</a>
         '''%(i,i) for i in range(15)]))
 
@@ -98,7 +96,7 @@ def index_show_svg(o):
     <html><head><title></title></head><body>
     %s <br/> %s
     </body></html>
-    '''%(Iron('cff2if').get_image(m,l,n,offset=int(o)),''.join(['''
+    '''%(Iron('cff2if',time.time()).get_image(m,l,n,offset=int(o)),''.join(['''
         <a href="/only/%d" target="_blank">-%d-</a>
         '''%(i,i) for i in range(15)]))
 
@@ -179,7 +177,7 @@ IF%s<br/>
 ver:%s
     </body></html>
     '''
-        pp = Iron('cff2if')
+        pp = Iron('cff2if',time.time())
         rs = htm%(str(datetime.datetime.now()),doit,pp.get_image('3','80','see'),pss,'<h1>%s</h1>'%vol,timestr,vsn+ver)
         cache['rs'] = rs
         return rs
@@ -210,7 +208,7 @@ IF%s<br/>
 ver:%s
     </body></html>
     '''
-        pp = Iron('cff2if')
+        pp = Iron('cff2if',time.time())
         onoff = ['''<a href="/%d/plus/"># %d #</a>'''%(xx,xx) for xx in range(3)]
         onoffnow = '''-= %d =-'''%doit
         oostr = onoffnow+" [ "+','.join(onoff)+" ] "
@@ -244,7 +242,7 @@ IF%s<br/>
 ver:%s
     </body></html>
     '''
-        pp = Iron('cff2if')
+        pp = Iron('cff2if',time.time())
         return htm%(str(datetime.datetime.now()),str(cache.get('result',{})),pp.get_image('3','80','see'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
 
 @route('/back/')
@@ -273,7 +271,7 @@ IF%s<br/>
 ver:%s
     </body></html>
     '''
-        pp = Iron('cff2if')
+        pp = Iron('cff2if',time.time())
         return htm%(str(datetime.datetime.now()),pp.get_image('3','80','see2'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
 
 @route('/1/')
@@ -302,7 +300,7 @@ IF%s<br/>
 ver:%s
     </body></html>
     '''
-        pp = Iron('cff2if')
+        pp = Iron('cff2if',time.time())
         return htm%(str(datetime.datetime.now()),pp.get_image('1','80','see'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
 
 @route('/back/1/')
@@ -322,7 +320,7 @@ def index21():
         now = datetime.datetime.now()+datetime.timedelta(days=15)
         timestr = now.strftime('%y%m')
         htm = u'''<!DOCTYPE html>
-    <html><head><META HTTP-EQUIV="REFRESH" CONTENT="10"><title>%s</title></head><body>%s</br>
+    <html><head><META HTTP-EQUIV="REFRESH" CONTENT="10"><title>%s</title></head><body>
 <table><tr>
    <td>%s</td>
    <td><h1>%s<br/>%s</h1><br/><br/><br/><h2>开关：<a href="/kaiguan">-= %d =-</a> <br/>0:停止交易 1:启动交易</h2></td>
@@ -331,8 +329,8 @@ IF%s<br/>
 ver:%s
     </body></html>
     '''
-        pp = Iron('cff2if')
-        return htm%(str(datetime.datetime.now()),cache.get('result',''),pp.get_image('1','80','see2'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
+        pp = Iron('cff2if',time.time())
+        return htm%(str(datetime.datetime.now()),pp.get_image('1','80','see2'),pss,'<h1>%s</h1>'%vol,doit,timestr,str(vsn))
 
 @route('/log/:a')
 def logit(a):
@@ -373,7 +371,7 @@ background-color:#dddddd;
 
 @route('/data/:symbol/:pos/molebot')
 def dataout2(symbol,pos):
-    return Iron(symbol).data_out(int(pos))
+    return Iron(symbol,time.time()).data_out(int(pos))
 
 @route('/load/:symbol/data')
 def dataout(symbol):
@@ -387,7 +385,7 @@ def dataout(symbol):
             f = open('/root/local/%d.txt'%ii,'w')
             f.writelines(cc.content)
             f.close()
-    p = Iron(symbol)
+    p = Iron(symbol,time.time())
     return p.data_in()+":%d"%a
 
 @route('/load/:filename/file')
@@ -413,10 +411,9 @@ def doreal(types,symbol,price,vol):
         tt = time.time()
         if 'symbol' not in cache:cache['symbol'] = {}
         cache['symbol'][types] = symbol
-        tick = Iron(types)
-        tick.real(float(price))
+        tick = Iron(types,time.time())
         tick.getmoney(float(vol))
-        tick.price(mathlog(float(price))*3400.0)
+        tick.price(mathlog(float(price))*3400.0,float(price),time.time())
         tick.get_result()
         result = tick.result
         cache['result'] = result
@@ -451,13 +448,12 @@ def apicff(p):#	s symbol b deadline_base o base a account t aceq p price
     if '192.168.' in request['REMOTE_ADDR'] and ( 555<=_time<=690 or 780<=_time<=915 ):
         global cache
         tt = time.time()
-        pp = Iron('cff2if')
-        pp.real(float(p))
+        pp = Iron('cff2if',time.time())
         pp.getmoney(float(0.0))
-        pp.price(mathlog(float(p))*3400.0)  #   delay 15 min
+        pp.price(mathlog(float(p))*3400.0,float(p),time.time())  #   delay 15 min
         pp.get_result()
         result = pp.result
-#        logger.error(str(result))
+        logger.error(str(result))
         cache['point'] = p
         cache['result'] = result
         _level = pp.day_level()
@@ -472,7 +468,7 @@ def apicff(p):#	s symbol b deadline_base o base a account t aceq p price
                     cache['closeit'] = 0
                 if result['result']<0 and _just-nnn<(uuu-nnn)*(myth**(_level+2)):
                     cache['closeit'] = 0
-#        logger.error('%.4f'%(time.time()-tt))
+        logger.error('%.4f'%(time.time()-tt))
         return 'd'
     else:
         logger.error("ERROR DATA REQUEST")
