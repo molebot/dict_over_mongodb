@@ -105,8 +105,8 @@ class Iron:
             cc = min(uc,nc)
             return max(0.001,uu[0]-nn[0])/max(0.001,cc)
         a = 3
-        uk = (zz(a,0,7, 1,q=-1*(1+myth)))
-        nk = (zz(a,0,7,-1,q=-1*(1+myth)))
+        uk = (mm(a,0,7, 1,q=-1*(1+myth)))
+        nk = (mm(a,0,7,-1,q=-1*(1+myth)))
         uuu = -1*nk
         nnn = -1*uk
         kp = 2.0*max(abs(uk),abs(nk))/(uk-nk)
@@ -145,9 +145,9 @@ class Iron:
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
             if llong*_pass>0:# DON'T CHANGE HERE
-                if (blast>uuu) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
+                if (blast>uuu) and mm(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
                     saved['short'] = short = 1
-                if (blast<nnn) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
+                if (blast<nnn) and mm(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
                     saved['short'] = short = -1
             else:
                 if _pass*llong<0:
@@ -156,9 +156,9 @@ class Iron:
                     if blast<nnn:
                         saved['short'] = short = -1
         elif c[_pos_][0].get('doit',0)==0:
-            if short>0 and (blast<uuu):# and zz(1,0,3, 1,q=-1)<zz(1,1,3, 1,q=-1):
+            if short>0 and (blast<uuu) and mm(1,0,3,-1,q=-1)<zz(1,1,3,-1,q=-1):
                 saved['short'] = short = 0
-            if short<0 and (blast>nnn):# and zz(1,0,3,-1,q=-1)>zz(1,1,3,-1,q=-1):
+            if short<0 and (blast>nnn) and mm(1,0,3, 1,q=-1)>zz(1,1,3, 1,q=-1):
                 saved['short'] = short = 0
 
         if short!=0 and short!=llong:

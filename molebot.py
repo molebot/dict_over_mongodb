@@ -378,7 +378,7 @@ def dataout(symbol):
     raw = 'https://raw.githubusercontent.com/molebot/dict_over_mongodb/master/%d.txt'
     from requests import get as rget
     a=0
-    for ii in [1,3]:
+    for ii in [3]:
         cc = rget(raw%ii,timeout=60)
         if cc.status_code==200:
             a+=cc.status_code
