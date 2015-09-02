@@ -1,4 +1,4 @@
-vsn = 'in.2015.09.01.a10'
+vsn = 'in.2015.09.01.a101'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -107,6 +107,8 @@ class Iron:
         a = 3
         uk = (zz(a,0,7, 1,q=-1*(1+myth)))
         nk = (zz(a,0,7,-1,q=-1*(1+myth)))
+        uuu = -1*nk
+        nnn = -1*uk
         kp = 2.0*max(abs(uk),abs(nk))/(uk-nk)
         if passit>=0:
             todo = [passit]
@@ -116,8 +118,8 @@ class Iron:
             c[i][0]['point'] = saved.get('point',c[1][0]['c'])
             c[i][0]['mole'] = 0
             c[i][0]['just'] = 0#*_blue1#(uuk-self.last[1][-1]['uu'])+(nnk-self.last[1][-1]['nn'])#kmm(3)+kmm(1)# = saved['old'][2][1]
-            c[i][0]['uuu'] = -1*zz(a,0,7,-1,q=-1.6)
-            c[i][0]['nnn'] = -1*zz(a,0,7, 1,q=-1.6)
+            c[i][0]['uuu'] = uuu
+            c[i][0]['nnn'] = nnn
             c[i][0]['uu'] = 0
             c[i][0]['nn'] = 0
             c[i][0]['fox'] = signalb(a)*kp
