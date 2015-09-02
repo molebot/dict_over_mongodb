@@ -1,4 +1,4 @@
-vsn = 'in.2015.08.25.h'
+vsn = 'in.2015.09.01.a10'
 import time,datetime
 from hashlib import md5
 from core import *
@@ -22,7 +22,7 @@ def filelog(symbol,i,j,o):
 
 def getprice(one):
     return (one['h']+one['l'])/2.0
-def getfox(one):return one['fox']
+def getfox(one):return bmm(one)*2.0
 cache['hh'] = {}
 
 fill_state={}
@@ -74,7 +74,7 @@ class Iron:
         def signal(pos):
             _store = _sc
             if pos not in _store:
-                _store[pos] = dmm(c[pos][0])
+                _store[pos] = bmm(c[pos][0])
             return _store[pos]
         _bc = {}
         def signalb(pos):
@@ -104,49 +104,23 @@ class Iron:
             nc = max(0,uu[0]-min(nn))
             cc = min(uc,nc)
             return max(0.001,uu[0]-nn[0])/max(0.001,cc)
-        a = 1
-        b = 3
-        ppp = abs(kmm(a))
-        pk = (ppp/(100*myth))**(1+myth)
-        pss = pk*(kmm(a)-zz(a,0,7,0))+zz(a,0,7,0)
-        _fox1 = zz(b,0,7,0)+pss*kw(b,pp=-2)/(myth*200)
-        _just1 = zz(b,0,7,0)+kmm(a)*kw(b,pp=-2)/(myth*200)
-
-        uuu1 = -1*zz(b,0,7,-1,q=-1)
-        nnn1 = -1*zz(b,0,7, 1,q=-1)
-        uk1 = min(1.0,abs(max(0,uuu1))/abs(nnn1))
-        nk1 = min(1.0,abs(min(0,nnn1))/abs(uuu1))
-        uu1 = -1*uk1*zz(a,0,7,-1,q=-2)
-        nn1 = -1*nk1*zz(a,0,7, 1,q=-2)
-        uu12 = uu1-myth*nn1
-        nn12 = nn1-myth*uu1
-        uuu = uu12
-        nnn = nn12
-
-        _blue1 = (_fox1+_just1)/2.0
-        _blue = _blue1
-
-        _blue1 = min( (2+myth)*100,_blue1)
-        _blue1 = max(-100*(2+myth),_blue1)
-
-        uuu = uu12
-        nnn = nn12#min(-100*(1+myth),min(_blue1,nnn))
-
+        a = 3
+        uk = (zz(a,0,7, 1,q=-1*(1+myth)))
+        nk = (zz(a,0,7,-1,q=-1*(1+myth)))
+        kp = 2.0*max(abs(uk),abs(nk))/(uk-nk)
         if passit>=0:
             todo = [passit]
         else:
             todo = self.todo
-            uuk = -1*mm(a,0,7,-1,q=-2)
-            nnk = -1*mm(a,0,7, 1,q=-2)
-            c[1][0]['uu'] = uuk
-            c[1][0]['nn'] = nnk
         for i in todo:
             c[i][0]['point'] = saved.get('point',c[1][0]['c'])
-            c[i][0]['mole'] = _blue1
-            c[i][0]['just'] = _blue1# = saved['old'][2][1]
-            c[i][0]['uuu'] = c[1][1].get('uu',0.0)
-            c[i][0]['nnn'] = c[1][1].get('nn',0.0)
-            c[i][0]['fox'] = _blue1
+            c[i][0]['mole'] = 0
+            c[i][0]['just'] = 0#*_blue1#(uuk-self.last[1][-1]['uu'])+(nnk-self.last[1][-1]['nn'])#kmm(3)+kmm(1)# = saved['old'][2][1]
+            c[i][0]['uuu'] = -1*zz(a,0,7,-1,q=-1.6)
+            c[i][0]['nnn'] = -1*zz(a,0,7, 1,q=-1.6)
+            c[i][0]['uu'] = 0
+            c[i][0]['nn'] = 0
+            c[i][0]['fox'] = signalb(a)*kp
             self.cache[i][0] = c[i][0]
             self.save(i,c[i][0])
         if passit>0:return c[passit][0]
@@ -160,20 +134,18 @@ class Iron:
         daybase = saved.get('daybase',0.0)
 
 
-
-
-        _pos_ = a = 1
-        _pass = (_blue-(uuu+nnn)/2.0)
-        blast = _blue1
-        uuu = min( 100*(1+myth),uuk)
-        nnn = max(-100*(1+myth),nnk)
-        _just = 0
+        uuu = min( 100*(1+myth),c[a][0]['uuu'])
+        nnn = max(-100*(1+myth),c[a][0]['nnn'])
+        saved['len'] = abs(c[a][0].get('fox',0.0)-(uuu+nnn)/2.0)/((uuu-nnn)/2.0)
+        _pos_ = 3
+        _pass = (c[a][0]['fox']-(uuu+nnn)/2.0)
+        blast = c[a][0].get('fox',0.0)
 
         if short==0 and c[_pos_][0].get('doit',0)==0:
             if llong*_pass>0:# DON'T CHANGE HERE
-                if (blast>uuu) and c[1][0]['fox']>c[1][1]['fox']:
+                if (blast>uuu) and zz(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
                     saved['short'] = short = 1
-                if (blast<nnn) and c[1][0]['fox']<c[1][1]['fox']:
+                if (blast<nnn) and zz(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
                     saved['short'] = short = -1
             else:
                 if _pass*llong<0:
@@ -182,9 +154,9 @@ class Iron:
                     if blast<nnn:
                         saved['short'] = short = -1
         elif c[_pos_][0].get('doit',0)==0:
-            if short>0 and (blast<uuu) and c[1][0]['fox']<c[1][1]['fox']:
+            if short>0 and (blast<uuu):# and zz(1,0,3, 1,q=-1)<zz(1,1,3, 1,q=-1):
                 saved['short'] = short = 0
-            if short<0 and (blast>nnn) and c[1][0]['fox']>c[1][1]['fox']:
+            if short<0 and (blast>nnn):# and zz(1,0,3,-1,q=-1)>zz(1,1,3,-1,q=-1):
                 saved['short'] = short = 0
 
         if short!=0 and short!=llong:
@@ -201,15 +173,15 @@ class Iron:
             saved['ls'] = LS2
             _profit = LS*(self.realprice-real)
             saved['real'] = self.realprice
-            saved['point'] = Point = c[1][0]['c']
-            c[i][0]['point'] = c[1][0]['c']
+            saved['point'] = Point = c[a][0]['c']
+            c[a][0]['point'] = c[a][0]['c']
 
             c[_pos_][0]['doit']=1
             self.cache[_pos_][0] = c[_pos_][0]
             self.save(_pos_,c[_pos_][0])
 
             LS = LS2
-            saved['base_ma'] = ma(saved['base_p'],saved.get('base_ma',0),5)
+            saved['base_ma'] = ma(saved.get('base_p',0),saved.get('base_ma',0),5)
             saved['fill'] = fill = 0
             if _day_.hour==9 and _day_.minute<30:
                 saved['dead'] = dead = 0
@@ -230,7 +202,7 @@ class Iron:
                     saved['base_c'] = saved.get('base_c',0)+1
 
         if fill<1:
-            if LS2*(c[1][0]['c']-Point)>=10:
+            if LS2*(c[_pos_][0]['c']-Point)>=10:
                 saved['fill'] = fill = 1
         #=======================================
         if _day_.hour==15 and _day_.minute>10:
@@ -280,9 +252,10 @@ class Iron:
         self.db = {}
         self.data={}
         self.symbol = symbol#+plus
-        self.todo = [3,1]
+        self.result = {}
+        self.todo = [3]
         for i in self.todo:self.db[i] = conn[self.symbol][str(i)]
-        self.raw = conn[self.symbol]['raw']
+        self.raw = conn['raw'][self.symbol]
         self.out = {}
         self.last = {}
         _a = allstate[self.symbol]
@@ -300,15 +273,18 @@ class Iron:
     def all_result(self):
         allstate[self.symbol] = self.state
         return {'state':self.state,'result':self.result}
-    def price(self,price,real,timer):
+    def price(self,price,real,timer,saveit=True):
         self.realprice = real
-        self.raw.save({'time':self.time,'price':price,'real':real})
+        if saveit:
+            self.raw.save({'time':self.time,'price':price,'real':real})
         for i in self.todo:
             self.new_price(price,i)
     def new_price(self,price,pos):
-        _result = list(self.db[pos].find({'do':1},sort=[('_id',desc)],limit=2))
+        _result = list(self.db[pos].find({'do':1},sort=[('_id',desc)],limit=3))
         self.last[pos] = _result
-        length = fibo[pos+self.offset]
+        self.cache[pos] = _result
+        _ts = self.state.get('len',0.1)*1.1
+        length = max(1,min(8,5**(1.0/max(0.2,_ts))))
         if len(_result)>0:
             now = _result[0]
             if len(_result)>1:
@@ -338,6 +314,7 @@ class Iron:
             new['cnt'] = now.get('cnt',0)+1
             new['_id'] = now['_id']+1
 
+            self.check_len(pos)
             now = self.check_base(pos,now,last)
 
             return self.check_k_len(new,length,now,pos)
@@ -350,6 +327,7 @@ class Iron:
             new['cnt'] = now.get('cnt',0)+1
             new['_id'] = now['_id']+1
 
+            self.check_len(pos)
             now = self.check_base(pos,now,last)
 
             return self.check_k_len(new,length,now,pos)
@@ -361,7 +339,6 @@ class Iron:
             new = {'o':p,'h':p,'l':p,'c':p,'do':0,'hour':self.hour,'point':now.get('point',0)}
             new['_id'] = int(self.time/3600)*1000000
             new['cnt'] = 0
-            self.check_len(pos)
             now = self.check_base(pos,now,last)
 
             saved = self.state
@@ -376,9 +353,7 @@ class Iron:
             _todo['old'] = _last
         _flow = [
         ('m','s','hr',getprice),
-#        ('pm','ps','hp',pmm),
-        ('zm','zs','hz',zmm),
-        ('xm','xs','hx',dmm),
+        ('pm','ps','hp',getfox),
         ]
         if _last:
             for mm,ss,hh,func in _flow:
@@ -415,10 +390,9 @@ class Iron:
         else:
             self.cache[pos] = [_todo]
         self.save(pos,_todo)
-        if pos==1:
+        if pos==15:
             _todo = self.get_result(passit=pos)
             _flow = [
-            ('pm','ps','hp',getfox),
             ]
             if _last:
                 for mm,ss,hh,func in _flow:
