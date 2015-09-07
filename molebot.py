@@ -400,6 +400,56 @@ def filein(filename):
         return '%s,%s'%(filename,cc.content[:50])
     return 'error'
 
+@route('/ctp/post',method="POST")
+def ctppost():
+    logten()
+    ac = {}
+    ac['_id'] = 'ctp'
+    ac['md_front'] = request.forms.get('md')
+    ac['td_front'] = request.forms.get('td')
+    ac['broker_id'] = request.forms.get('broker')
+    ac['account_num'] = request.forms.get('acc')
+    ac['account_pwd'] = request.forms.get('pwd')
+    ac['this_symbol'] = request.forms.get('symbol')
+    ctp.clear()
+    ctp[('_id','ctp')] = ac
+    thread.start_new_thread(alertmail,('%s_account_changed[HIGH]'%acc.account,))
+    redirect('/ctp/ok')
+
+@route('/ctp/ok')
+def ctpok():
+    logten()
+    return """<html><head><title>ok</title><META HTTP-EQUIV="REFRESH" CONTENT="5;url=/ctp/get"></head><body><h1>ok!</h1></body></html>"""
+
+
+@route('/ctp/get')
+def ctpget():
+    logten()
+    _l = ctp[('_id','ctp')]
+    if _l and _l[0]!={}:
+        ac = _l[0]
+    else:
+        ac = {'md_front':'tcp://','td_front':'tcp://','broker_id':'0','account_num':'0','account_pwd':'0','this_symbol':'IF0000'}
+    _str = u"""
+        <head>
+        </head><body>
+                <h2>
+        <form action="/ctp/post" method="post">
+        <p> 行情服务器地址: <input type="text" name="md" value="%(md_front)s"></input></p>
+        <p> 交易服务器地址: <input type="text" name="td" value="%(td_front)s"></input></p>
+        <p> 座席ID: <input type="text" name="broker" value="%(broker_id)s"></input></p>
+        <p> 用户账号: <input type="text" name="acc" value="%(account_num)s"></input></p>
+        <p> 用户密码: <input type="password" name="pwd" /></p>
+        <p> 当前合约: <input type="text" name="symbol" value="%(this_symbol)s"></input></p>
+        <p><input type="submit" value=" 提交 "/> </p>   
+
+        </form>
+        </h2>
+        </body></html>
+    """
+    return _str%ac
+
+
 upstate={}
 @route('/real/:types/:symbol/:price/:vol/')
 def doreal(types,symbol,price,vol):

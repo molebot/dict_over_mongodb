@@ -115,7 +115,7 @@ class Iron:
         else:
             todo = self.todo
         for i in todo:
-            c[i][0]['point'] = saved.get('point',c[1][0]['c'])
+            c[i][0]['point'] = saved.get('point',c[a][0]['c'])
             c[i][0]['mole'] = 0
             c[i][0]['just'] = 0#*_blue1#(uuk-self.last[1][-1]['uu'])+(nnk-self.last[1][-1]['nn'])#kmm(3)+kmm(1)# = saved['old'][2][1]
             c[i][0]['uuu'] = uuu
@@ -130,35 +130,35 @@ class Iron:
         llong = saved.get('long',1)
         dead = saved.get('dead',0)
         LS = saved.get('ls',1)
-        Point = saved.get('point',c[1][0]['c'])
+        Point = saved.get('point',c[a][0]['c'])
         real = saved.get('real',self.realprice)
         fill = saved.get('fill',0)
         daybase = saved.get('daybase',0.0)
 
 
-        uuu = min( 100*(1+myth),c[a][0]['uuu'])
-        nnn = max(-100*(1+myth),c[a][0]['nnn'])
+        uuu = max( 100*(1+myth),c[a][0]['uuu'])
+        nnn = min(-100*(1+myth),c[a][0]['nnn'])
         saved['len'] = abs(c[a][0].get('fox',0.0)-(uuu+nnn)/2.0)/((uuu-nnn)/2.0)
         _pos_ = 3
         _pass = (c[a][0]['fox']-(uuu+nnn)/2.0)
         blast = c[a][0].get('fox',0.0)
-
+        a = 3
         if short==0 and c[_pos_][0].get('doit',0)==0:
             if llong*_pass>0:# DON'T CHANGE HERE
-                if (blast>uuu) and mm(a,0,3,-1,q=-1)>zz(a,1,3,-1,q=-1):
+                if (c[a][0]['fox']>uuu) and mm(a,0,3,-1,q=-1)>mm(a,1,3,-1,q=-1):
                     saved['short'] = short = 1
-                if (blast<nnn) and mm(a,0,3, 1,q=-1)<zz(a,1,3, 1,q=-1):
+                if (c[a][0]['fox']<nnn) and mm(a,0,3, 1,q=-1)<mm(a,1,3, 1,q=-1):
                     saved['short'] = short = -1
             else:
                 if _pass*llong<0:
-                    if blast>uuu:
+                    if c[a][0]['fox']>uuu:
                         saved['short'] = short = 1
-                    if blast<nnn:
+                    if c[a][0]['fox']<nnn:
                         saved['short'] = short = -1
         elif c[_pos_][0].get('doit',0)==0:
-            if short>0 and (blast<uuu) and mm(1,0,3,-1,q=-1)<zz(1,1,3,-1,q=-1):
+            if short>0 and c[a][0]['fox']<uuu and mm(a,0,3,-1,q=-1)<mm(a,1,3,-1,q=-1):
                 saved['short'] = short = 0
-            if short<0 and (blast>nnn) and mm(1,0,3, 1,q=-1)>zz(1,1,3, 1,q=-1):
+            if short<0 and c[a][0]['fox']>nnn and mm(a,0,3, 1,q=-1)>mm(a,1,3, 1,q=-1):
                 saved['short'] = short = 0
 
         if short!=0 and short!=llong:
@@ -357,10 +357,10 @@ class Iron:
         ('m','s','hr',getprice),
         ('pm','ps','hp',getfox),
         ]
-        if _last:
+        if _last and 'hr' in _last and 'hp' in _last:
             for mm,ss,hh,func in _flow:
                 if hh not in _todo:
-                    _todo[hh] = [func(_last)]+_last[hh][:fibo[-1]]
+                    _todo[hh] = [func(_last)]+_last.get(hh,[])[:fibo[-1]]
                 _prcs = func(_todo)
                 _list = [_prcs] + _todo[hh]
                 _todo[mm]={}
